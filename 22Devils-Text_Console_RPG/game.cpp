@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <cstdlib>
 #include "game.h"
 
@@ -25,10 +25,10 @@ void GameStart() {
             break;
         case 3:
             std::cout << "Returning to main menu..." << std::endl;
-            return; // mainÀ¸·Î µ¹¾Æ°¨
+            return; // mainìœ¼ë¡œ ëŒì•„ê°
         case 4:
             std::cout << "Exiting game..." << std::endl;
-            std::exit(0); // ÇÁ·Î±×·¥ Á¾·á
+            std::exit(0); // í”„ë¡œê·¸ëž¨ ì¢…ë£Œ
         default:
             std::cout << "Invalid choice!" << std::endl;
         }

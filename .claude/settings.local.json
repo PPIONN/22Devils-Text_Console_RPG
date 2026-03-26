@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file --mime-encoding *.cpp *.h)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Bash(xxd -l 3 \"$f\")",
+      "Bash(done)"
+    ]
+  }
+}
