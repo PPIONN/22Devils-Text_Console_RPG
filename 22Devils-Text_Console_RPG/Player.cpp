@@ -4,6 +4,7 @@ Player::Player()
 {
 	level = 1;
 	exp = 0;
+	money = 0;
 	setmaxexp(1);
 }
 Player::~Player()
@@ -12,18 +13,18 @@ Player::~Player()
 }
 Player* Player::Selector()
 {
-	Player* player = NULL;
+	Player* player = nullptr;
 	int Num;
 
-	std::cout << "Character list" << std::endl;
-	std::cout << "1. Charmander" << std::endl;
-	std::cout << "2. Squirtle" << std::endl;
-	std::cout << "3. Bulbasaur" << std::endl;
-	std::cout << "4. Pikachu" << std::endl;
-	std::cout << "Choose your character: ";
-	std::cin >> Num;
-	while (player == NULL)
+	while (player == nullptr)
 	{
+		std::cout << "Character list" << std::endl;
+		std::cout << "1. Charmander" << std::endl;
+		std::cout << "2. Squirtle" << std::endl;
+		std::cout << "3. Bulbasaur" << std::endl;
+		std::cout << "4. Pikachu" << std::endl;
+		std::cout << "Choose your character: ";
+		std::cin >> Num;
 		switch (Num)
 		{
 		case 1:
@@ -47,7 +48,7 @@ Player* Player::Selector()
 }
 void Player::StatusGrowth(int level)
 {
-	sethp(level);
+	setmaxhp(level);
 	setattack(level);
 	setdefense(level);
 	setspecialAttack(level);
@@ -88,6 +89,11 @@ void Player::setmaxexp(int level)
 {
 	maxexp = static_cast<float>(4 * pow(level, 3) / 5);
 }
+void Player::setmoney(int Deltamoney)
+{
+	int newmoney = money + Deltamoney;
+	money = newmoney;
+}
 void Player::LevelUP()
 {
 	if (exp >= maxexp)
@@ -121,13 +127,8 @@ Charmander::Charmander() : Player::Player()
 	basespecialAttack = 60;
 	basespecialDefense = 60;
 	basespeed = 65;
-	maxhp = sethp(1);
+	StatusGrowth(1);
 	currenthp = maxhp;
-	attack = setattack(1);
-	defense = setdefense(1);
-	specialAttack = setspecialAttack(1);
-	specialDefense = setspecialDefense(1);
-	speed = setspeed(1);
 }
 
 Squirtle::Squirtle() : Player::Player()
@@ -139,13 +140,8 @@ Squirtle::Squirtle() : Player::Player()
 	basespecialAttack = 50;
 	basespecialDefense = 64;
 	basespeed = 43;
-	maxhp = sethp(1);
+	StatusGrowth(1);
 	currenthp = maxhp;
-	attack = setattack(1);
-	defense = setdefense(1);
-	specialAttack = setspecialAttack(1);
-	specialDefense = setspecialDefense(1);
-	speed = setspeed(1);
 }
 
 Bulbasaur::Bulbasaur() : Player::Player()
@@ -157,13 +153,8 @@ Bulbasaur::Bulbasaur() : Player::Player()
 	basespecialAttack = 65;
 	basespecialDefense = 65;
 	basespeed = 45;
-	maxhp = sethp(1);
+	StatusGrowth(1);
 	currenthp = maxhp;
-	attack = setattack(1);
-	defense = setdefense(1);
-	specialAttack = setspecialAttack(1);
-	specialDefense = setspecialDefense(1);
-	speed = setspeed(1);
 }
 
 Pikachu::Pikachu() : Player::Player()
@@ -175,11 +166,6 @@ Pikachu::Pikachu() : Player::Player()
 	basespecialAttack = 50;
 	basespecialDefense = 50;
 	basespeed = 90;
-	maxhp = sethp(1);
+	StatusGrowth(1);
 	currenthp = maxhp;
-	attack = setattack(1);
-	defense = setdefense(1);
-	specialAttack = setspecialAttack(1);
-	specialDefense = setspecialDefense(1);
-	speed = setspeed(1);
 }

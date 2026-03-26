@@ -9,13 +9,15 @@ public:
 	~Player();
 	Player* Selector();
 	void StatusGrowth(int level);
-	void sethp(int level);
+	void setmaxhp(int level);
+	void setcurrenthp(int DeltaHP);
 	void setattack(int level);
 	void setdefense(int level);
 	void setspecialAttack(int level);
 	void setspecialDefense(int level);
 	void setspeed(int level);
 	void setmaxexp(int level);
+	void setmoney(int Deltamoney);
 	void LevelUP();
 	void ShowStatus() const;
 
@@ -30,13 +32,8 @@ protected:
 	int speed;
 	int level;
 	int exp;
+	int money;
 	int maxexp;
-	float hpGrowth;
-	float attackGrowth;
-	float defenseGrowth;
-	float specialAttackGrowth;
-	float specialDefenseGrowth;
-	float speedGrowth;
 	int basehp;
 	int baseattack;
 	int basedefense;
