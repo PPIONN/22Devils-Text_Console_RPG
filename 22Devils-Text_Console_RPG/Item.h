@@ -3,24 +3,17 @@
 class Item
 {
 private:
-	int HP;
-	int MaxHP;
-	int XP;
-	int Power;
-	int Defense;
-	int gold;
-	int Level;
-
+	
 
 
 
 public:
 
-	void RareCandy();
-	void HPPotion();
-	void FHPPotion();
-	void MultiLens();
-	void Booster();
+	void RareCandy(Player& player);
+	void HPPotion(Player& player);
+	void FHPPotion(Player& player);
+	void MultiLens(Player& player);
+	void PowerPotion(Player& player);
 
 
 
