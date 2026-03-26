@@ -1,4 +1,4 @@
-﻿//Item.cpp
+//Item.cpp
 
 #include <iostream>
 #include "Item.h"
@@ -13,13 +13,21 @@ void Item::HPPotion()
 {
 	HP += 20 ;
 }
-void FHPPotion()
+void Item::FHPPotion()
 {
+	HP = MaxHP;
+}
+
+void Item::MultiLens()
+{
+   //전투 시스템 완성 후 연결 필요
+   //예시)공격 시 hotCount를 1->2로 변경
+}
+
+void Item::Booster()
+{
+
 
 }
 
-void MultiLens()
-{
-	//이건 시스템 쪽을 더 건드려봐야하지 않을까 싶음
-	//공격선택지를 바로 누르게 하는 느낌
-}
+

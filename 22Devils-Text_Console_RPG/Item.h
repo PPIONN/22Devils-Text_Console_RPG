@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class Item
 {
@@ -20,7 +20,7 @@ public:
 	void HPPotion();
 	void FHPPotion();
 	void MultiLens();
-
+	void Booster();
 
 
 
