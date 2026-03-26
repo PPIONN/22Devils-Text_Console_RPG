@@ -1,63 +1,76 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cstdlib>
 #include "game.h"
+#include "Player.h"
 
-// Game Start
+Player* player = nullptr; 
+
 void GameStart() {
-    int choice;
+	int choice;
 
-    while (true) {
-        std::cout << "\n[Game Start]" << std::endl;
-        std::cout << "1. Fight" << std::endl;
-        std::cout << "2. Shop" << std::endl;
-        std::cout << "3. Return to Main Menu" << std::endl;
-        std::cout << "4. Exit Game" << std::endl;
-        std::cout << "Choice: ";
+	if (player == nullptr) {
+		player = (new Player())->Selector();
+	}
 
-        std::cin >> choice;
+	while (true) {
+		std::cout << "\n[Game Start]" << std::endl;
+		std::cout << "1. Fight\n2. Shop\n3. Return\n4. Exit\n5. Player Stat\n";
+		std::cout << "Choice: ";
+		std::cin >> choice;
 
-        switch (choice) {
-        case 1:
-            std::cout << "Fight started!" << std::endl;
-            break;
-        case 2:
-            std::cout << "Entering shop..." << std::endl;
-            break;
-        case 3:
-            std::cout << "Returning to main menu..." << std::endl;
-            return; // main으로 돌아감
-        case 4:
-            std::cout << "Exiting game..." << std::endl;
-            std::exit(0); // 프로그램 종료
-        default:
-            std::cout << "Invalid choice!" << std::endl;
-        }
-    }
+		switch (choice) {
+		case 1: std::cout << "Fight started!\n"; break;
+		case 2: GameShop(); break;
+		case 3: return;
+		case 4: exit(0);
+		case 5: PlayerStat(); break;
+		default: std::cout << "Invalid choice!\n";
+		}
+	}
 }
 
-// Game Rule
+void PlayerStat() {
+	int back;
+
+	std::cout << "\n[ Player Stat ]\n";
+
+	if (player)
+		player->ShowStatus();
+	else
+		std::cout << "No character selected!\n";
+
+	std::cout << "\nPress 1 to go back: ";
+	std::cin >> back;
+}
+
 void GameRule() {
-    int back;
-    std::cout << "\n[Game Rule]" << std::endl;
-    std::cout << "This game is an RPG where you grow stronger through battles." << std::endl;
-    std::cout << "Defeat enemies, level up, and collect money!" << std::endl;
-    std::cout << "\nPlease input 1 to go back: " << std::endl;
-    std::cin >> back;
-    while (back != 1) {
-        std::cout << "Please input 1 to go back: ";
-        std::cin >> back;
-    }
+	std::cout << "RPG Game\n";
 }
 
-// Game Developer
 void GameDeveloper() {
-    int back;
-    std::cout << "\n[Game Developers]" << std::endl;
-    std::cout << "1. O Chaeyul\n2. Shin Gunho\n3. Lee Hyunjun\n4. Lee Chaeho\n5. Bae Geonwoo\n6. Noh Yongsoo" << std::endl;
-    std::cout << "\nPlease input 1 to go back: " << std::endl;
-    std::cin >> back;
-    while (back != 1) {
-        std::cout << "Please input 1 to go back: ";
-        std::cin >> back;
-    }
+	std::cout << "Developers\n";
+}
+
+void GameShop() {
+	int choice;
+
+	while (true) {
+		std::cout << "\n[ SHOP ]\n";
+		std::cout << "1. RareCandy\n2. HPPotion\n3. HPPotion\n4. MultiLens\n5. Booster\n0. Back\n";
+		std::cout << "Choice: ";
+		std::cin >> choice;
+
+		if (choice == 0) return;
+
+		int q;
+		std::cout << "How many (1-10): ";
+		std::cin >> q;
+
+		if (q < 1 || q > 10) {
+			std::cout << "Enter 1~10\n";
+			continue;
+		}
+
+		std::cout << "Purchased " << q << " item(s)\n";
+	}
 }

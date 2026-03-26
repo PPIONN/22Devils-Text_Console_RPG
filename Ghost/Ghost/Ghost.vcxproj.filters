@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hyeonjoon.cpp">
+    <ClCompile Include="Ghost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
