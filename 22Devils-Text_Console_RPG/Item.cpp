@@ -57,6 +57,6 @@ void Item::PowerPotion(Player& player)
 		return;
 	}
 	player.setmoney(-200);
-	player.setattack(player.getattack() + 20);
+	//player.setattack(player.getattack() + 20);
 	std::cout << "Power increased by 20!" << std::endl;
 }
