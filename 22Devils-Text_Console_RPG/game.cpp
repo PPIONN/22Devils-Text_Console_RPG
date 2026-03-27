@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "game.h"
 #include "Player.h"
+#include "Item.h"
 
 Player* player = nullptr; 
 
@@ -53,24 +54,50 @@ void GameDeveloper() {
 
 void GameShop() {
 	int choice;
+	Item item; 
 
 	while (true) {
 		std::cout << "\n[ SHOP ]\n";
-		std::cout << "1. RareCandy\n2. HPPotion\n3. HPPotion\n4. MultiLens\n5. Booster\n0. Back\n";
+		item.ShowAllItems();  
 		std::cout << "Choice: ";
 		std::cin >> choice;
 
 		if (choice == 0) return;
 
-		int q;
-		std::cout << "How many (1-10): ";
-		std::cin >> q;
+		int confirm;
 
-		if (q < 1 || q > 10) {
-			std::cout << "Enter 1~10\n";
-			continue;
+		switch (choice) {
+		case 1:
+			std::cout << "Do you want to purchase 1 RareCandy? (1: Yes / 0: No): ";
+			std::cin >> confirm;
+			if (confirm == 1 && player)
+				item.RareCandy(*player);
+			break;
+
+		case 2:
+			std::cout << "Do you want to purchase 1 HPPotion? (1: Yes / 0: No): ";
+			std::cin >> confirm;
+			if (confirm == 1 && player)
+				item.HPPotion(*player);
+			break;
+
+		case 3:
+			std::cout << "Do you want to purchase 1 FHPPotion? (1: Yes / 0: No): ";
+			std::cin >> confirm;
+			if (confirm == 1 && player)
+				item.FHPPotion(*player);
+			break;
+
+		case 4:
+			std::cout << "Do you want to purchase 1 MultiLens? (1: Yes / 0: No): ";
+			std::cin >> confirm;
+			if (confirm == 1 && player)
+				item.MultiLens(*player);
+			break;
+
+
+		default:
+			std::cout << "Invalid choice!\n";
 		}
-
-		std::cout << "Purchased " << q << " item(s)\n";
 	}
 }

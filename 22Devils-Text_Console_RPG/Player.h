@@ -79,12 +79,12 @@ protected:
 	int exp;
 	int maxexp;
 	// 외부 요인으로 인한 스탯 변경값
-	int dhp;
-	int datt;
-	int ddef;
-	int dsatt;
-	int dsdef;
-	int dspd;
+	int dhp = 0;
+	int datt = 0;
+	int ddef = 0;
+	int dsatt = 0;
+	int dsdef = 0;
+	int dspd = 0;
 
 	// 레벨 제한
 	static const int maxlevel = 100;
