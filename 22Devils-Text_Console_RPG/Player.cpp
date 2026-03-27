@@ -51,6 +51,7 @@ Player* Player::Selector()
 }
 
 // 레벨에 따라 변동하는 능력치 설정
+// 레벨업 시 올라가는 능력치 한번에 올리기
 void Player::setStatus(int level)
 {
 	setmaxhp(level);
@@ -64,27 +65,27 @@ void Player::setStatus(int level)
 //계산식
 void Player::setmaxhp(int level) // 최대 체력
 {
-	maxhp = (static_cast<float>((2 * basehp + 100)) / 100 + 10) * level;
+	maxhp = (static_cast<float>((2 * basehp + 100)) / 100 + 10) * level + dhp;
 }
 void Player::setattack(int level) // 공격
 {
-	attack = (static_cast<float>((2 * baseattack)) / 100 + 5) * level;
+	attack = (static_cast<float>((2 * baseattack)) / 100 + 5) * level + datt;
 }
 void Player::setdefense(int level) // 방어
 {
-	defense = (static_cast<float>((2 * basedefense)) / 100 + 5) * level;
+	defense = (static_cast<float>((2 * basedefense)) / 100 + 5) * level + ddef;
 }
 void Player::setspecialAttack(int level) // 특수공격
 {
-	specialAttack = (static_cast<float>((2 * basespecialAttack)) / 100 + 5) * level;
+	specialAttack = (static_cast<float>((2 * basespecialAttack)) / 100 + 5) * level + dsatt;
 }
 void Player::setspecialDefense(int level) // 특수방어
 {
-	specialDefense = (static_cast<float>((2 * basespecialDefense)) / 100 + 5) * level;
+	specialDefense = (static_cast<float>((2 * basespecialDefense)) / 100 + 5) * level + dsdef;
 }
 void Player::setspeed(int level) // 스피드
 {
-	speed = (static_cast<float>((2 * basespeed)) / 100 + 5) * level;
+	speed = (static_cast<float>((2 * basespeed)) / 100 + 5) * level + dspd;
 }
 void Player::setmaxexp(int level) // 레벨업에 필요한 경험치
 {
@@ -97,6 +98,72 @@ void Player::setmaxexp(int level) // 레벨업에 필요한 경험치
 }
 
 // 레벨과 무관하게 변동하는 능력치
+// 통합 setter
+void Player::ModifyStat(StatType type, int amount)
+{
+	switch (type)
+	{
+	case StatType::MaxHP:
+		maxhp += amount;
+		dhp = amount;
+		break;
+	case StatType::Attack:
+		attack += amount;
+		datt = amount;
+		break;
+	case StatType::Defense:
+		defense += amount;
+		ddef = amount;
+		break;
+	case StatType::SpecialAttack:
+		specialAttack += amount;
+		dsatt = amount;
+		break;
+	case StatType::SpecialDefense:
+		specialDefense += amount;
+		ddef = amount;
+		break;
+	case StatType::Speed:
+		speed += amount;
+		dspd = amount;
+		break;
+	case StatType::EXP:
+		if (level < maxlevel)
+		{
+			exp += amount;
+			LevelUP(); // 경험치 얻은 뒤 레벨업이 가능해지면 바로 레벨업할 수 있게 설정
+		}
+		else
+		{
+			exp = 0; // 만렙에서 추가 경험치 획득을 방지
+		}
+		break;
+	case StatType::CurrentHP:
+		currenthp += amount;
+		if (currenthp > maxhp)
+		{
+			currenthp = maxhp;
+		}
+		if (currenthp < 0)
+		{
+			currenthp = 0;
+		}
+		// 추후 hp가 0이 될 경우 바로 사망처리하기 위한 임시 코드
+		/*
+		if (currenthp = 0)
+		{
+			std::cout << "Game Over" << endl;
+		}
+		*/
+		break;
+	case StatType::Money:
+		money += amount;
+		break;
+	default:
+		break;
+	}
+}
+// 기존 setter들 임시로 남겨두긴 할건데 가능하면 위의 통합 getter로 교체해주세요
 void Player::setcurrenthp(int DeltaHp) // 현재 체력
 {
 	currenthp += DeltaHp;
@@ -175,19 +242,134 @@ void Player::ShowStatus() const
 	std::cout << "Speed : " << speed << std::endl;
 	std::cout << "Quit Menu" << std::endl;
 }
+//통합 getter
+int Player::getStatus(StatType type) const
+{
+	switch (type)
+	{
+	case StatType::MaxHP:
+		return maxhp;
+	case StatType::Attack:
+		return attack;
+	case StatType::Defense:
+		return defense;
+	case StatType::SpecialAttack:
+		return specialAttack;
+	case StatType::SpecialDefense:
+		return specialDefense;
+	case StatType::Speed:
+		return speed;
+	case StatType::CurrentHP:
+		return currenthp;
+	case StatType::EXP:
+		return exp;
+	case StatType::MaxEXP:
+		return maxexp;
+	case StatType::Level:
+		return level;
+	case StatType::Money:
+		return money;
+	case StatType::DHP:
+		return dhp;
+	case StatType::DAtt:
+		return datt;
+	case StatType::ADef:
+		return ddef;
+	case StatType::DSAtt:
+		return dsatt;
+	case StatType::DSDef:
+		return dsdef;
+	case StatType::DSpd:
+		return dspd;
+	default:
+		break;
+	}
+}
+// 기존 getter들 임시로 남겨두긴 할건데 가능하면 위의 통합 getter로 교체해주세요
+int Player::getmaxhp() const
+{
+	return maxhp;
+}
+int Player::getcurrenthp() const
+{
+	return currenthp;
+}
+int Player::getattack() const
+{
+	return attack;
+}
+int Player::getdefense() const
+{
+	return defense;
+}
+int Player::getspecialAttack() const
+{
+	return specialAttack;
+}
+int Player::getspecialDefense() const
+{
+	return specialDefense;
+}
+int Player::getspeed() const
+{
+	return speed;
+}
+int Player::getmaxexp() const
+{
+	return maxexp;
+}
+int Player::getexp() const
+{
+	return exp;
+}
 int Player::getmoney() const
 {
 	return money;
+}
+int Player::getdhp() const
+{
+	return dhp;
+}
+int Player::getdatt() const
+{
+	return datt;
+}
+int Player::getddef() const
+{
+	return ddef;
+}
+int Player::getdsatt() const
+{
+	return dsatt;
+}
+int Player::getdsdef() const
+{
+	return dsdef;
+}
+int Player::getdspd() const
+{
+	return dspd;
 }
 
 // 플레이어 행위 함수
 void Player::Attack()
 {
 	std::cout << name << " attacked enemy." << std::endl;
+	std::cout << "enemy suffered " << Damage() << "damage." << std::endl;
 }
 int Player::Damage()
 {
-
+	int FinalDamage = (level * 2 / 5 + 2) * attack; // 기술 추가하면 여기에 기술 위력도 추가해야 함
+	return FinalDamage;
+}
+void Player::GetDamaged(int dmg)
+{
+	int playerdamage = dmg / (defense * 50 + 2);
+	if (playerdamage == 0)
+	{
+		playerdamage = 1;
+	}
+	ModifyStat(StatType::CurrentHP, -playerdamage);
 }
 
 // 자식 클래스(플레이어 포켓몬)
