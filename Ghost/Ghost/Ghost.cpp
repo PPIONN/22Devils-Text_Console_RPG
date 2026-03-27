@@ -3,10 +3,7 @@
 // 
 #include <iostream>
 #include <vector>
-class pokemon {
 
-
-};
 struct Skill
 {
     std::string name;
@@ -30,20 +27,22 @@ public:
     ~Gastly() {};
     void newpokescale(int level) { // 포켓몬 출현 시 레벨에 따른 스텟을 계산함
         setlevel(level);
-        sethp(level);
-        setattack(level);
-        setdefense(level);
-        setspecailAttack(level);
-        setspecailDefense(level);
-        setspeed(level);
+        levelhp(level);
+        levelattack(level);
+        leveldefense(level);
+        levelspecailAttack(level);
+        levelspecailDefense(level);
+        levelspeed(level);
     }
-    void levelscale(int level) { // 레벨업 시 올라갈 스텟을 계산함
-        sethp(level);
-        setattack(level);
-        setdefense(level);
-        setspecailAttack(level);
-        setspecailDefense(level);
-        setspeed(level);
+    void levelscale(int level) { // 플레이어의 레벨을 받아 포켓몬 스텟 조정
+        if (this->level != level) {
+            levelhp(level);
+            levelattack(level);
+            leveldefense(level);
+            levelspecailAttack(level);
+            levelspecailDefense(level);
+            levelspeed(level);
+        }
     }
 
     void levelup() { // 레벨업 시 레벨을 1 올려주고 레벨 및 스탯 출력
@@ -85,36 +84,59 @@ public:
 
     void expgain() { // 적 포켓몬 처치시 경험치 획득 공식 추후 수정 예정
 
-        //double part1 = (baseExp * enemyLevel) / (5.0 * share);
 
-        //double part2 = (2.0 * enemyLevel + 10.0) /
-        //    (enemyLevel + myLevel + 10.0);
+    }
+    void takeDamage(Gastly* enermy,int amount) { // amuount에 대미지 공식 리턴함수 넣으면 됩니다
+        enermy->sethp(enermy->gethp()-amount);
+        if (enermy->gethp() < 0)  enermy->sethp(0); // 체력이 0 미만으로 떨어지지 않게 방지
 
-        //double result = part1 * (pow(part2, 2.5) + 1.0);
+        std::cout << name << " took " << amount << " damage!" << std::endl;
+        std::cout <<"Enermy " << name << "'s HP is now " << enermy->gethp() << std::endl;
 
-        //result *= bonus;
+        if (hp <= 0) {
+            std::cout << name << " fainted!" << std::endl;
+        }
     }
 
-    void sethp(int level) { // 레벨업을 상정하고 만든 능력치 set. 
+
+    void levelhp(int level) { // 레벨업을 상정하고 만든 능력치 set. 
         hp += hpGrowth * level;
     }
-    void setattack(int level) {
+    void levelattack(int level) {
         attack += attackGrowth * level;
     }
-    void setdefense(int level) {
+    void leveldefense(int level) {
         defense += defenseGrowth * level;
     }
-    void setspecailAttack(int level) {
+    void levelspecailAttack(int level) {
         specailAttack += specailAttackGrowth * level;
     }
-    void setspecailDefense(int level) {
+    void levelspecailDefense(int level) {
         specailDefense += specailDefenseGrowth * level;
     }
-    void setspeed(int level) {
+    void levelspeed(int level) {
         speed += speedGrowth * level;
     }
     void setlevel(int level) {
         this->level = level;
+    }
+    void sethp(int hp) {
+        this->hp = hp;
+    }
+    void setattack(int attack) {
+        this->attack = attack;
+    }
+    void setdefense(int defense) {
+        this->defense = defense;
+    }
+    void setspecailAttack(int specailAttack) {
+        this->specailAttack = specailAttack;
+    }
+    void setspecailDefense(int specailDefense) {
+        this->specailDefense = specailDefense;
+    }
+    void setspeed(int speed) {
+        this->speed = speed;
     }
 
     int gethp() {
@@ -173,20 +195,21 @@ private:
     float speedGrowth = 1.91;
     std::string name = "Gastly";
     std::string personality;
-    std::vector<Skill> learnableSkills = { { "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
-    { "Lick", "Ghost", "Physical", 20, 100, 30, 0 },
-    { "Spite", "Ghost", "Status", 0, 100, 10, 5 },
-    { "Mean Look", "Normal", "Status", 0, -1, 5, 8 },
-    { "Curse", "Unknown", "Status", 0, -1, 10, 12 },
-    { "Night Shade", "Ghost", "Special", 0, 100, 15, 15 },
-    { "Confuse Ray", "Ghost", "Status", 0, 100, 10, 19 },
-    { "Sucker Punch", "Dark", "Physical", 80, 100, 5, 22 },
-    { "Payback", "Dark", "Physical", 50, 100, 10, 26 },
-    { "Shadow Ball", "Ghost", "Special", 80, 100, 15, 29 },
-    { "Dream Eater", "Psychic", "Special", 100, 100, 15, 33 },
-    { "Dark Pulse", "Dark", "Special", 80, 100, 15, 36 },
-    { "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
-    { "Nightmare", "Ghost", "Status", 0, -1, 15, 43 } };
+    std::vector<Skill> const learnableSkills = { 
+        { "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
+        { "Lick", "Ghost", "Physical", 20, 100, 30, 0 },
+        { "Spite", "Ghost", "Status", 0, 100, 10, 5 },
+        { "Mean Look", "Normal", "Status", 0, -1, 5, 8 },
+        { "Curse", "Unknown", "Status", 0, -1, 10, 12 },
+        { "Night Shade", "Ghost", "Special", 0, 100, 15, 15 },
+        { "Confuse Ray", "Ghost", "Status", 0, 100, 10, 19 },
+        { "Sucker Punch", "Dark", "Physical", 80, 100, 5, 22 },
+        { "Payback", "Dark", "Physical", 50, 100, 10, 26 },
+        { "Shadow Ball", "Ghost", "Special", 80, 100, 15, 29 },
+        { "Dream Eater", "Psychic", "Special", 100, 100, 15, 33 },
+        { "Dark Pulse", "Dark", "Special", 80, 100, 15, 36 },
+        { "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
+        { "Nightmare", "Ghost", "Status", 0, -1, 15, 43 } };
     std::vector<Skill> currentSkills;   // 현재 기술 (최대 4개)
 
 };
@@ -197,18 +220,24 @@ private:
 class Haunter : public Gastly {
 
 
-
 };
+
 int main()
 {
 
 
-    Gastly Gastly(20);
-    Gastly.levelup();
-    Gastly.levelup();
-    Gastly.levelup();
+    Gastly GastlyMine(20); // 레벨이 다른 고오스
+    Gastly GastlyEnermy(15); // 서로 다른 능력치
+    GastlyMine.levelup();
+    GastlyMine.levelup();
+    GastlyMine.levelup();
 
-    Gastly.printskill();
+    GastlyMine.printskill();
+    GastlyMine.takeDamage(&GastlyEnermy,5); // 우리팀 대미지는 5로 일단 고정
+    GastlyMine.takeDamage(&GastlyEnermy,5);
+
+    GastlyEnermy.takeDamage(&GastlyMine,5); // 적팀 대미지는 5로 일단 고정
+    GastlyEnermy.takeDamage(&GastlyMine, 5);
 
 
 
