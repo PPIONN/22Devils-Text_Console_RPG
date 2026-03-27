@@ -81,13 +81,32 @@ void Item::MultiLens(Player& player)
 
 void Item::randomexp(Player& player)
 {
+	if (player.getmoney() < 100)
+	{
+		std::cout << "Not enough gold!" << std::endl;
+		return;
+	}
+	player.setmoney(-100);
 
+	int EXP = rand() % 451 + 50;  // 50 ~ 500
+	player.setexp(EXP);
+	std::cout << "You got " << EXP << " EXP!" << std::endl;
 
 }
 
+
 void Item::randomgold(Player& player)
 {
+	if (player.getmoney() < 100)
+	{
+		std::cout << "Not enough gold!" << std::endl;
+		return;
+	}
+	player.setmoney(-100);
 
+	int gold = rand() % 451 + 50;  // 50 ~ 500
+	player.setmoney(gold);
+	std::cout << "You got " << gold << " gold!" << std::endl;
 }
 
 
