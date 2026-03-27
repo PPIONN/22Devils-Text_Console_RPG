@@ -175,9 +175,19 @@ void Player::ShowStatus() const
 	std::cout << "Speed : " << speed << std::endl;
 	std::cout << "Quit Menu" << std::endl;
 }
-void Player::getmoney() const
+int Player::getmoney() const
 {
-	std::cout << "Money : " << money << std::endl;
+	return money;
+}
+
+// 플레이어 행위 함수
+void Player::Attack()
+{
+	std::cout << name << " attacked enemy." << std::endl;
+}
+int Player::Damage()
+{
+
 }
 
 // 자식 클래스(플레이어 포켓몬)

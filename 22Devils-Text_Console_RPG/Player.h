@@ -20,7 +20,9 @@ public:
 	void setmoney(int Deltamoney);
 	void LevelUP();
 	void ShowStatus() const;
-	void getmoney() const;
+	int getmoney() const;
+	void Attack();
+	int Damage();
 
 protected:
 	//스탯
