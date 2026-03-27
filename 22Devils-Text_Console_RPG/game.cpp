@@ -14,6 +14,7 @@ void GameStart() {
 	}
 
 	while (true) {
+		std::system("cls");
 		std::cout << "\n[Game Start]" << std::endl;
 		std::cout << "1. Fight\n2. Shop\n3. Return\n4. Exit\n5. Player Stat\n";
 		std::cout << "Choice: ";
@@ -32,6 +33,8 @@ void GameStart() {
 
 void PlayerStat() {
 	int back;
+
+	std::system("cls");
 
 	std::cout << "\n[ Player Stat ]\n";
 
@@ -54,7 +57,9 @@ void GameDeveloper() {
 
 void GameShop() {
 	int choice;
-	Item item; 
+	Item item;
+
+	std::system("cls");
 
 	while (true) {
 		std::cout << "\n[ SHOP ]\n";
