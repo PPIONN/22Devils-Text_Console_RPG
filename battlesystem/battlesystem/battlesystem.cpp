@@ -1,4 +1,4 @@
-//스피드 비교, hp랑 공격력 적용해서 전투종료 (전투시스템 구현 완료/스텟 적용 전)
+﻿//스피드 비교, hp랑 공격력 적용해서 전투종료 (전투시스템 구현 완료/스텟 적용 전)
 //몬스터 쓰러뜨릴시 얻을 골드, 경험치 구현필효
 //몬스터 조우시 플레이어 레벨에 따라 몬스터 레벨,스텟 적용 구현 필요
 //ex)스타팅 포켓몬 4마리중 한마리 결정하기 (건우님이랑 대화 필요)
@@ -28,13 +28,13 @@ using namespace std;
 int main() {
 
 	//피카츄(플레이어) 스텟
-	string PkachuName = "피카츄";
+	string PkachuName = "피카츄 ";
 	int PikachuHP = 100;
 	int PikachuAttack = 10;
 	int PikachuSpeed = 90;
 
 	//고라파덕(몬스터) 스텟
-	string PsyduckName = "고라파덕";
+	string PsyduckName = "고라파덕 ";
 	int PsyduckHP = 80;
 	int PsyduckAttack = 7;
 	int PsyduckSpeed = 85;
