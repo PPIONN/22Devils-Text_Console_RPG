@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Player.h"
 
 class Item
@@ -19,6 +19,7 @@ public:
 	void PowerPotion(Player& player);
 	void randomexp(Player& player);
 	void randomgold(Player& player);
-
+	void BuyHPPotion(Player& player);
+	void UseHPPotion(Player& player);
 
 };

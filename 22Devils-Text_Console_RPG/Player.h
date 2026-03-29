@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include <string>
+#include <vector>
 
 // 유기적인 스탯관리를 위한 Enum Class
 enum class StatType
@@ -65,7 +66,18 @@ public:
 	void ModifyStat(StatType type, int amount);
 	void GetDamaged(int dmg);
 
+	//오채율 - AddItem 함수 추가(vector inventory에 아이템 명 추가)
+	void AddItem(const std::string& itemName);
+	//오채율 - HasItem 함수 추가(vector inventory에 아이템이 존재하는지 확인)
+	bool HasItem(const std::string& itemName);
+	//오채율 - RemoveItem 함수 추가(vector inventory에서 사용한 아이템 제거)
+	void RemoveItem(const std::string& itemName);
+
+
 protected:
+	//오채율 - Inventory vector 추가
+	std::vector<std::string> inventory;
+
 	// 스탯
 	std::string name;
 	int maxhp;
