@@ -7,7 +7,7 @@ Player::Player()
 {
 	level = 1;
 	exp = 0;
-	money = 0;
+	money = 1000;
 }
 Player::~Player()
 {
@@ -450,6 +450,13 @@ void Player::RemoveItem(const std::string& itemName)
 			inventory.erase(it);
 			return;
 		}
+	}
+}
+
+void Player::PrintAllItems()
+{
+	for (int i = 0; i < inventory.size(); i++) {
+		std::cout << "아이템명 : " << inventory[i] << std::endl;  // ✅
 	}
 }
 

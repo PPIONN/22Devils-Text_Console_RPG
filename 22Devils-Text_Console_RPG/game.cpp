@@ -90,14 +90,14 @@ void GameShop() {
 			std::cout << "Do you want to purchase 1 FHPPotion? (1: Yes / 0: No): ";
 			std::cin >> confirm;
 			if (confirm == 1 && player)
-				item.FHPPotion(*player);
+				item.BuyFHPPotion(*player);
 			break;
 
 		case 4:
 			std::cout << "Do you want to purchase 1 MultiLens? (1: Yes / 0: No): ";
 			std::cin >> confirm;
 			if (confirm == 1 && player)
-				item.MultiLens(*player);
+				item.BuyMultiLens(*player);
 			break;
 
 

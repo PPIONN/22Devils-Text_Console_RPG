@@ -72,6 +72,7 @@ public:
 	bool HasItem(const std::string& itemName);
 	//오채율 - RemoveItem 함수 추가(vector inventory에서 사용한 아이템 제거)
 	void RemoveItem(const std::string& itemName);
+	void PrintAllItems();
 
 
 protected:
