@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <cstdlib>
 #include "game.h"
 #include "Player.h"
@@ -83,21 +83,21 @@ void GameShop() {
 			std::cout << "Do you want to purchase 1 HPPotion? (1: Yes / 0: No): ";
 			std::cin >> confirm;
 			if (confirm == 1 && player)
-				item.HPPotion(*player);
+				item.BuyHPPotion(*player);
 			break;
 
 		case 3:
 			std::cout << "Do you want to purchase 1 FHPPotion? (1: Yes / 0: No): ";
 			std::cin >> confirm;
 			if (confirm == 1 && player)
-				item.FHPPotion(*player);
+				item.BuyFHPPotion(*player);
 			break;
 
 		case 4:
 			std::cout << "Do you want to purchase 1 MultiLens? (1: Yes / 0: No): ";
 			std::cin >> confirm;
 			if (confirm == 1 && player)
-				item.MultiLens(*player);
+				item.BuyMultiLens(*player);
 			break;
 
 

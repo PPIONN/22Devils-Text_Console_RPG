@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include <cmath>
 #include <iostream>
 
@@ -7,7 +7,7 @@ Player::Player()
 {
 	level = 1;
 	exp = 0;
-	money = 0;
+	money = 1000;
 }
 Player::~Player()
 {
@@ -424,3 +424,39 @@ Pikachu::Pikachu() : Player::Player() // 피카츄
 	setStatus(1);
 	currenthp = maxhp;
 }
+
+//오채율 - AddItem 함수 정의 추가
+void Player::AddItem(const std::string& itemName)
+{
+	inventory.push_back(itemName);
+	std::cout << itemName << "added to inventory!" << std::endl;
+}
+
+bool Player::HasItem(const std::string& itemName)
+{
+	for (int i = 0; i < inventory.size(); i++)
+	{
+		if (inventory[i] == itemName) return true;
+	}
+	return false;
+}
+
+void Player::RemoveItem(const std::string& itemName)
+{
+	for (auto it = inventory.begin(); it != inventory.end(); ++it)
+	{
+		if (*it == itemName)
+		{
+			inventory.erase(it);
+			return;
+		}
+	}
+}
+
+void Player::PrintAllItems()
+{
+	for (int i = 0; i < inventory.size(); i++) {
+		std::cout << "아이템명 : " << inventory[i] << std::endl;  // ✅
+	}
+}
+
