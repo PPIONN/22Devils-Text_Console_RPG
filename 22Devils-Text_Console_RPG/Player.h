@@ -1,6 +1,29 @@
 #pragma once
 #include <string>
 
+// 유기적인 스탯관리를 위한 Enum Class
+enum class StatType
+{
+	MaxHP,
+	Attack,
+	Defense,
+	SpecialAttack,
+	SpecialDefense,
+	Speed,
+	CurrentHP,
+	EXP,
+	MaxEXP,
+	Level,
+	Money,
+	DHP,
+	DAtt,
+	ADef,
+	DSAtt,
+	DSDef,
+	DSpd,
+	Name
+};
+
 class Player
 {
 public:
@@ -20,10 +43,30 @@ public:
 	void setmoney(int Deltamoney);
 	void LevelUP();
 	void ShowStatus() const;
-	void getmoney() const;
+	void Attack();
+	int Damage();
+	int getStatus(StatType type) const;
+	int getmaxhp() const;
+	int getcurrenthp() const;
+	int getattack() const;
+	int getdefense() const;
+	int getspecialAttack() const;
+	int getspecialDefense() const;
+	int getspeed() const;
+	int getmaxexp() const;
+	int getexp() const;
+	int getmoney() const;
+	int getdhp() const;
+	int getdatt() const;
+	int getddef() const;
+	int getdsatt() const;
+	int getdsdef() const;
+	int getdspd() const;
+	void ModifyStat(StatType type, int amount);
+	void GetDamaged(int dmg);
 
 protected:
-	//스탯
+	// 스탯
 	std::string name;
 	int maxhp;
 	int currenthp;
@@ -35,6 +78,13 @@ protected:
 	int level;
 	int exp;
 	int maxexp;
+	// 외부 요인으로 인한 스탯 변경값
+	int dhp = 0;
+	int datt = 0;
+	int ddef = 0;
+	int dsatt = 0;
+	int dsdef = 0;
+	int dspd = 0;
 
 	// 레벨 제한
 	static const int maxlevel = 100;
@@ -74,3 +124,4 @@ class Pikachu : public Player
 public:
 	Pikachu();
 };
+

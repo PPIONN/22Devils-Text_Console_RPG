@@ -6,6 +6,23 @@
 
 //일단 아이템을 상점에서 구매하자마자 바로 사용되는 방식으로 만들고 있긴 한데
 //Multi Lens같은 함수는 전투 중 사용할 수 있어야 할 것 같긴 해요.
+//인벤토리
+//클래스 상속?
+
+void Item::ShowAllItems() // 호출시 아이템 리스트 전체 출력
+{
+	std::cout << "=== Item List ===" << std::endl;
+	std::cout << "1. Rare Candy  - Instantly levels up the player (500G)" << std::endl;
+	std::cout << "2. HPPotion    - Restores 20 HP (300G)" << std::endl;
+	std::cout << "3. FHPPotion   - Fully restores HP (300G)" << std::endl;
+	std::cout << "4. MultiLens   - Next attack hits twice (100G)" << std::endl;
+	std::cout << "5. PowerPorion - Increase attack by 20 (200G)" << std::endl;
+	std::cout << "=================" << std::endl;
+
+}
+
+
+
 
 void Item::RareCandy(Player& player)
 {
@@ -15,7 +32,7 @@ void Item::RareCandy(Player& player)
 		return;
 	}
 	player.setmoney(-500);
-	player.setexp(100);
+	player.LevelUP();
 	std::cout << "Used RareCandy! EXP +100" << std::endl;
 }
 
@@ -46,9 +63,56 @@ void Item::FHPPotion(Player& player)
 void Item::MultiLens(Player& player)
 {
 	//공격이 한 번 더 반복되는 아이템
-	// 전투 시스템 완성 후 연결 필요
+	//예상 구현
+	//player.h에 protected로 bool 변수 extraAttack = false; 추가
+	//player.h - public에 getter/setter 추가
+	//  bool getExtraAttack() const { return extraAttack; }
+	//  void setExtraAttack(bool val) { extraAttack = val; }
+
+	if (player.getmoney() < 100)
+	{
+		std::cout << "Not enough gold!" << std::endl;
+		return;
+	}
+	player.setmoney(-100);
+	//player.setExtraAttack(true); -> 미래 구현 제안
+	std::cout << "MultiLens activated! Next attack will hit twice!" << std::endl;
 }
 
+void Item::randomexp(Player& player)
+{
+	if (player.getmoney() < 100)
+	{
+		std::cout << "Not enough gold!" << std::endl;
+		return;
+	}
+	player.setmoney(-100);
+
+	int EXP = rand() % 451 + 50;  // 50 ~ 500
+	player.setexp(EXP);
+	std::cout << "You got " << EXP << " EXP!" << std::endl;
+
+}
+
+
+void Item::randomgold(Player& player)
+{
+	if (player.getmoney() < 100)
+	{
+		std::cout << "Not enough gold!" << std::endl;
+		return;
+	}
+	player.setmoney(-100);
+
+	int gold = rand() % 451 + 50;  // 50 ~ 500
+	player.setmoney(gold);
+	std::cout << "You got " << gold << " gold!" << std::endl;
+}
+
+
+
+
+/*
 void Item::PowerPotion(Player& player)
 {
 	if (player.getmoney() < 200)
@@ -57,6 +121,7 @@ void Item::PowerPotion(Player& player)
 		return;
 	}
 	player.setmoney(-200);
-	//player.setattack(player.getattack() + 20);
+	player.setattack(player.getattack() + 20);
 	std::cout << "Power increased by 20!" << std::endl;
 }
+*/

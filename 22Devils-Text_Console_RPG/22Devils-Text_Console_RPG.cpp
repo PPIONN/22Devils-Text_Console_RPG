@@ -4,6 +4,8 @@
 int main() {
 	int choice;
 
+	std::system("cls");
+
 	while (true) {
 		std::cout << "\n===== GAME MENU =====" << std::endl;
 		std::cout << "1. Game Start" << std::endl;
