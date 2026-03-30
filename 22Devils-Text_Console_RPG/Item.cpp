@@ -52,12 +52,26 @@ void Item::BuyHPPotion(Player& player)
 	player.AddItem("HPPotion");  // 여기서 문자열을 직접 넣어줌
 }
 
-void Item::UseHPPotion(Player& player)
+void Item::UseHPPotion(Player& player, pokemon* poke)
 {
 	if (player.HasItem("HPPotion"))    // 인벤토리에 있는지 확인
 	{
-		player.setcurrenthp(+20);      // 효과 적용
-		player.RemoveItem("HPPotion"); // 인벤토리에서 제거
+		if (poke->getmaxhp() == poke->gethp()) { // maxhp/hp 150/150 <- 이런느낌의 풀피라면 아이템만 사라짐 아니라면 else로
+			player.RemoveItem("FHPPotion");
+		}
+		else {
+			if ((poke->getmaxhp() - poke->gethp()) >= 20) { // 포켓몬의 남은 체력이 풀피보다 -20 이상이라면 ex 150/130~0
+				poke->sethp(poke->gethp() + 20); // 20 회복
+				player.RemoveItem("FHPPotion");
+			}
+			else if ((poke->getmaxhp() - poke->gethp()) <= 20) { // 20보다 덜 달았다면
+				poke->sethp(poke->getmaxhp() - poke->gethp()); // 달은만큼만 회복
+				player.RemoveItem("FHPPotion");
+			}
+			else {
+				std::cout << "버그임";
+			}
+		}
 	}
 	else
 	{
@@ -82,7 +96,7 @@ void Item::UseFHPPotion(Player& player)
 {
 	if (player.HasItem("FHPPotion"))
 	{
-		player.setcurrenthp(9999);    
+		player.setcurrenthp(9999);
 		player.RemoveItem("FHPPotion");
 	}
 	else
@@ -131,11 +145,11 @@ void Item::BuyPowerPotion(Player& player)
 	player.AddItem("PowerPotion");  
 }
 
-void Item::UsePowerPotion(Player& player)
+void Item::UsePowerPotion(Player& player, pokemon* poke)
 {
 	if (player.HasItem("PowerPotion"))  
 	{
-		player.setattack(+20);
+		poke->setattack(poke->getattack() + 20);
 		player.RemoveItem("PowerPotion"); 
 	}
 	else
