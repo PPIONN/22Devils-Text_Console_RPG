@@ -49,6 +49,9 @@ public:
 	void AddPokemon(std::unique_ptr<pokemon> newpokemon);
 	void MyPokemonUI();
 	pokemon* getLeadPokemon();
+	bool isAllFainted() const;
+	void selectPokemon(bool IsBattle);
+	pokemon* changePokemon();
 
 	//오채율 - AddItem 함수 추가(vector inventory에 아이템 명 추가)
 	void AddItem(const std::string& itemName);
@@ -57,8 +60,6 @@ public:
 	//오채율 - RemoveItem 함수 추가(vector inventory에서 사용한 아이템 제거)
 	void RemoveItem(const std::string& itemName);
 	void PrintAllItems() const;
-	void selectPokemon();
-	void changePokemon();
 
 	//public 변수
 	int playerlevel;
