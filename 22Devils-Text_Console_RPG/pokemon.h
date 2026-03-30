@@ -23,7 +23,7 @@ struct Skill // 포켓몬이 가지는 스킬
 
 class pokemon {
 public:
-
+	pokemon() : level(1), hp(0), maxhp(0), name("Unknown") {}
 	virtual ~pokemon() {}
 
 	// 생성자속에서 해볼만한 일
@@ -109,8 +109,29 @@ public:
 	}
 
 
-
-	//virtual void attack() = 0;
+	//void selectattack(pokemon* poke, int index) {
+	//	Skill& selected = currentSkills[index];
+	//	//std::string sName = selected.name;   // 스킬 이름 (예: "Lick")
+	//	//int sPower = selected.power;         // 위력 (예: 20)
+	//	//std::string sCategory = selected.category; // 물리/특수/변화
+	//	int randomNumber = rand() % 100; // 난수 생성
+	//	if (selected.category == "Physical") {
+	//		// 물리 공격 로직
+	//		if (randomNumber < selected.accuracy) {
+	//			// a가 60이면 0~59까지의 숫자가 나왔을 때 실행됨 (정확히 60%)
+	//			std::cout << name <<"은 " << selected.name<<"" << std::endl;
+	//		}
+	//		else {
+	//			std::cout << "기술이 빗나갔습니다..." << std::endl;
+	//		}
+	//	}
+	//	else if (selected.category == "Special") {
+	//		// 특수 공격 로직
+	//	}
+	//	else if (selected.category == "Status") { 
+	//		// 변화기 로직
+	//	}
+	//}
 
 	//void ShowInfo() const;
 
@@ -119,6 +140,7 @@ public:
 protected:
 	std::string name;//포켓몬 별명
 	std::string realname; //포켓몬 고유 이름
+	float maxhp;
 	float hp; // 기본 능력치
 	float attack;
 	float defense;
