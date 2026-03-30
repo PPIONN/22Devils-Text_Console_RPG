@@ -37,16 +37,14 @@ public:
 	void Selector();
 	void LevelUP();
 	void ShowStatus(); //const;
-	void Attack();
-	int Damage();
 	int getStatus(StatType type) const;
 	void setStatus(StatType type, int amount);
-	void GetDamaged(int dmg);
 	void InventoryUI();
 	Itemname ChangeItemEnum(const std::string& itemName); // item 관련 코드 enum class로 변경하기 전까지 사용할 임시 코드
 	void ItemUse(Itemname item);
 	void AddPokemon(std::unique_ptr<pokemon> newpokemon);
 	void MyPokemonUI();
+	pokemon* getLeadPokemon();
 
 	//오채율 - AddItem 함수 추가(vector inventory에 아이템 명 추가)
 	void AddItem(const std::string& itemName);
