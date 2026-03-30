@@ -1,4 +1,6 @@
-﻿#include "Player.h"
+﻿//Player.cpp
+
+#include "Player.h"
 #include <cmath>
 #include <iostream>
 
@@ -28,7 +30,15 @@ void Player::LevelUP()
 		{
 			playerexp -= playermaxexp;
 			++playerlevel;
-			setmaxexp(playerlevel);
+			setStatus(StatType::MaxEXP, 0);
+
+			for (auto& p : mypokemon)
+			{
+				if (p)
+				{
+					p->levelup();
+				}
+			}
 
 			if (playerlevel >= maxlevel) // 레벨업했을 때 만렙이 될 경우 현재 경험치 0으로 초기화 후 반복문 종료
 			{
@@ -100,28 +110,6 @@ void Player::ShowStatus() //const
 	InventoryUI();
 }
 
-// 플레이어 행위 함수/전투 관련->수정할 예정
-void Player::Attack()
-{
-	std::cout << name << " attacked enemy." << std::endl;
-	std::cout << "enemy suffered " << Damage() << "damage." << std::endl;
-}
-int Player::Damage()
-{
-	int FinalDamage = (level * 2 / 5 + 2) * attack; // 기술 추가하면 여기에 기술 위력도 추가해야 함
-	return FinalDamage;
-}
-void Player::GetDamaged(int dmg)
-{
-	int playerdamage = dmg / (defense * 50 + 2);
-	if (playerdamage == 0)
-	{
-		playerdamage = 1;
-	}
-	ModifyStat(StatType::CurrentHP, -playerdamage);
-}
-
-
 
 //아이템 관련 코드들
 
@@ -182,7 +170,7 @@ void Player::InventoryUI()
 		std::cout << "Select : ";
 		if (std::cin >> i)
 		{
-			if(i == inventory.size() + 1 || inventory.size() == 0)
+			if (i == inventory.size() + 1 || inventory.size() == 0)
 			{
 				break;
 			}
@@ -302,7 +290,7 @@ void Player::ItemUse(Itemname item)
 
 
 
-// 보유 포켓몬 관련 함수 // 현재 플레이어가 포켓몬에게 포함된 protected 변수를 읽어올 수가 없어서 해당 부분은 비워둠
+// 보유 포켓몬 관련 함수. 현재 플레이어가 포켓몬에게 포함된 protected 변수를 읽어올 수가 없어서 해당되는 getter 함수가 없는 부분은 비워둠
 
 // 스타팅 포켓몬 선택
 void Player::Selector()
@@ -358,17 +346,26 @@ void Player::AddPokemon(std::unique_ptr<pokemon> newpokemon)
 void Player::MyPokemonUI()
 {
 	int i = 0;
-	for (int i = 0; i < inventory.size(); ++i)
+	for (int i = 0; i < mypokemon.size(); ++i)
 	{
-		std::cout << i + 1 << "." << "Name : " << mypokemon[i] /*포켓몬 이름*/ << "Pokemon : " << mypokemon[i] /*포켓몬 종류*/ << std::endl;
+		std::cout << i + 1 << "." << "Name : ";
+		mypokemon[i]->ShowInfo(); // 함수에 포켓몬 이름이랑 종류 없어서 못읽어옴
+		std::cout << std::endl;
 	}
+}
+
+//배틀 시 선두 포켓몬 출전
+pokemon* Player::getLeadPokemon()
+{
+	return mypokemon.empty() ? nullptr : mypokemon[0].get();
 }
 
 void Player::selectPokemon()
 {
 	int si;
+	bool IsBattle = false;
 	MyPokemonUI();
-	while(true)
+	while (true)
 	{
 		if (!(std::cin >> si))
 		{
@@ -376,7 +373,6 @@ void Player::selectPokemon()
 
 		}
 		int a = 0;
-		bool IsBattle = false;
 		std::cout << "selected : " << mypokemon[si - 1] /*포켓몬 이름*/ << std::endl;
 		std::cout << "What to do?" << std::endl;
 		/*배틀 중일 때만*/
@@ -409,6 +405,7 @@ void Player::selectPokemon()
 			else
 			{
 				std::cout << "Cannot do that in Battle" << std::endl;
+				break;
 			}
 			break;
 		default:
@@ -422,12 +419,19 @@ void Player::changePokemon()
 	//미구현
 }
 
-// 스타팅 포켓몬 파일 내에 같이 정의
-// 기술은 아직 안바꿈
+// 스타팅 포켓몬 파일 내에 같이 정의. 기술은 아직 안바꿈
 Charmander::Charmander(Player* player) : pokemon::pokemon() // 파이리
 {
 	owner = player;
 	this->level = player->playerlevel;
+
+	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
+	this->attackGrowth = ((2 * 52) / 100 + 5);
+	this->defenseGrowth = ((2 * 43) / 100 + 5);
+	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
+	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
+	this->speedGrowth = ((2 * 65) / 100 + 5);
+
 	this->levelhp(level);
 	this->maxhp = hp;
 	this->levelattack(level);
@@ -436,13 +440,7 @@ Charmander::Charmander(Player* player) : pokemon::pokemon() // 파이리
 	this->levelspecialDefense(level);
 	this->levelspeed(level);
 
-	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
-	this->attackGrowth = ((2 * 52) / 100 + 5);
-	this->defenseGrowth = ((2 * 43) / 100 + 5);
-	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
-	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
-	this->speedGrowth = ((2 * 65) / 100 + 5);
-	this->type = { "fire" };
+	this->type = { "Fire" };
 	this->learnableSkills =
 	{
 		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
@@ -460,12 +458,21 @@ Charmander::Charmander(Player* player) : pokemon::pokemon() // 파이리
 		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
 		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
 	};
+	this->newpokeSkills();
 }
 
 Squirtle::Squirtle(Player* player) : pokemon::pokemon() // 꼬부기
 {
 	owner = player;
 	this->level = player->playerlevel;
+
+	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
+	this->attackGrowth = ((2 * 52) / 100 + 5);
+	this->defenseGrowth = ((2 * 43) / 100 + 5);
+	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
+	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
+	this->speedGrowth = ((2 * 65) / 100 + 5);
+
 	this->levelhp(level);
 	this->maxhp = hp;
 	this->levelattack(level);
@@ -474,13 +481,7 @@ Squirtle::Squirtle(Player* player) : pokemon::pokemon() // 꼬부기
 	this->levelspecialDefense(level);
 	this->levelspeed(level);
 
-	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
-	this->attackGrowth = ((2 * 52) / 100 + 5);
-	this->defenseGrowth = ((2 * 43) / 100 + 5);
-	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
-	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
-	this->speedGrowth = ((2 * 65) / 100 + 5);
-	this->type = { "fire" };
+	this->type = { "Water" };
 	this->learnableSkills =
 	{
 		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
@@ -498,12 +499,21 @@ Squirtle::Squirtle(Player* player) : pokemon::pokemon() // 꼬부기
 		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
 		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
 	};
+	this->newpokeSkills();
 }
 
 Bulbasaur::Bulbasaur(Player* player) : pokemon::pokemon() // 이상해씨
 {
 	owner = player;
 	this->level = player->playerlevel;
+
+	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
+	this->attackGrowth = ((2 * 52) / 100 + 5);
+	this->defenseGrowth = ((2 * 43) / 100 + 5);
+	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
+	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
+	this->speedGrowth = ((2 * 65) / 100 + 5);
+
 	this->levelhp(level);
 	this->maxhp = hp;
 	this->levelattack(level);
@@ -512,13 +522,7 @@ Bulbasaur::Bulbasaur(Player* player) : pokemon::pokemon() // 이상해씨
 	this->levelspecialDefense(level);
 	this->levelspeed(level);
 
-	this->hpGrowth = ((2 * 39 + 100) / 100 + 10);
-	this->attackGrowth = ((2 * 52) / 100 + 5);
-	this->defenseGrowth = ((2 * 43) / 100 + 5);
-	this->specialAttackGrowth = ((2 * 60) / 100 + 5);
-	this->specialDefenseGrowth = ((2 * 50) / 100 + 5);
-	this->speedGrowth = ((2 * 65) / 100 + 5);
-	this->type = { "fire" };
+	this->type = { "Grass" };
 	this->learnableSkills =
 	{
 		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
@@ -536,4 +540,5 @@ Bulbasaur::Bulbasaur(Player* player) : pokemon::pokemon() // 이상해씨
 		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
 		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
 	};
+	this->newpokeSkills();
 }
