@@ -5,7 +5,7 @@
 #include <iostream>
 
 // 생성자/소멸자
-Player::Player(std::string playername)
+Player::Player(std::string playername) : playername(playername)
 {
 	playerlevel = 1;
 	playerexp = 0;
@@ -79,6 +79,16 @@ void Player::setStatus(StatType type, int amount)
 		break;
 	}
 }
+int Player::setexp(int amount)
+{
+	playerexp += amount;
+	return playerexp;
+}
+int Player::setmoney(int amount)
+{
+	money += amount;
+	return money;
+}
 //통합 getter
 int Player::getStatus(StatType type) const
 {
@@ -95,6 +105,14 @@ int Player::getStatus(StatType type) const
 	default:
 		break;
 	}
+}
+int Player::getexp() const
+{
+	return playerexp;
+}
+int Player::getmoney() const
+{
+	return money;
 }
 // 능력치/소지금 확인
 void Player::ShowStatus() //const

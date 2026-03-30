@@ -37,7 +37,11 @@ public:
 	void Selector();
 	void LevelUP();
 	void ShowStatus(); //const;
+	int getexp() const;
+	int getmoney() const;
 	int getStatus(StatType type) const;
+	int setexp(int amount);
+	int setmoney(int amount);
 	void setStatus(StatType type, int amount);
 	void InventoryUI();
 	Itemname ChangeItemEnum(const std::string& itemName); // item 관련 코드 enum class로 변경하기 전까지 사용할 임시 코드
