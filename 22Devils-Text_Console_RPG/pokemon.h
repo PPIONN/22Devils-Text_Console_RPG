@@ -90,7 +90,7 @@ public:
 	void warstat(); // 전투스탯
 
 	void levelup();
-
+	void newpokeSkills();
 	std::string getRandomNature() { // 이건 볼필요없음
 		// static을 사용하여 프로그램 실행 중 딱 한 번만 벡터를 채웁니다.
 		static std::vector<std::string> natureNames;

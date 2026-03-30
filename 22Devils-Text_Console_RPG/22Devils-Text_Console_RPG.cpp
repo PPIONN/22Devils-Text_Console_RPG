@@ -44,17 +44,17 @@ int main() {
 		}
 	}*/
 
-	gastly* myGhost = new gastly(35, "고옹이");
-	gastly* enermyGhost = new gastly(20, "패롱이");
-	myGhost->ShowInfo(); std::cout << "\n";
+	gastly* myGhost = new gastly(35, "고옹이"); // 내 포켓몬은 // gastly* myGhost = new gastly(플레이어레벨, "별명"); // 이렇게 구현해주셈
+	gastly* enermyGhost = new gastly(20, "패롱이"); // 적 포켓몬은 알잘딱깔센
+	myGhost->ShowInfo(); std::cout << "\n"; 
 	enermyGhost->ShowInfo(); std::cout << "\n";
 
-	myGhost->levelup();std::cout << "\n"; // 레벨 차면 알아서 스킬 배움
+	myGhost->levelup();std::cout << "\n"; // 레벨 차면 알아서 스킬 배움 // 4개 이상 배우고있는 상태면 한개 지우고 한개 배움
 
-	myGhost->ShowInfo();std::cout << "\n";
+	myGhost->ShowInfo();std::cout << "\n"; // 대충 능력치 보여줌
 
 	enermyGhost->ShowInfo();std::cout << "\n";
-	enermyGhost->selectattack(myGhost, 2);
+	enermyGhost->selectattack(myGhost, 2); // enermyGhost->selectattack(myGhost, 2); // 공격하려는포켓몬->selectattack(공격받는포켓몬,스킬쓰고싶은거) 스킬쓰고싶은거 = 0~3 까지
 
 	myGhost->ShowInfo(); std::cout << "\n";
 	enermyGhost->ShowInfo(); std::cout << "\n";
@@ -62,15 +62,18 @@ int main() {
 	std::cout << "\n";
 	myGhost->levelup();
 	std::cout << "\n";
-	enermyGhost->ShowInfo();
+	myGhost->ShowInfo(); std::cout << "\n";
+	enermyGhost->ShowInfo(); std::cout << "\n";
 	std::cout << "\n";
 	enermyGhost->selectattack(myGhost,2);
 	std::cout << "\n";
-	enermyGhost->ShowInfo();
+	myGhost->ShowInfo(); std::cout << "\n";
+	enermyGhost->ShowInfo(); std::cout << "\n";
 	std::cout << "\n";
 	myGhost->selectattack(enermyGhost, 2);
 	std::cout << "\n";
-	enermyGhost->ShowInfo();
+	myGhost->ShowInfo(); std::cout << "\n";
+	enermyGhost->ShowInfo(); std::cout << "\n";
 
 
 

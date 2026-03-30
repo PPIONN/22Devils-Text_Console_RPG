@@ -30,7 +30,7 @@ void pokemon::levelscale(const int nowlevel) { // 매개변수 : 포켓몬.getle
 void pokemon::levelup() {
 	// 1. 레벨 수치 증가 및 능력치 스케일링
 	setlevel(getlevel() + 1);
-	levelscale(getlevel());
+	levelscale(1);
 
 	std::cout << "\n레벨이 " << getlevel() << "로 올랐다!" << std::endl;
 
@@ -117,6 +117,31 @@ void pokemon::updateSkills() {
 			}
 		}
 		else {
+			++it;
+		}
+	}
+}
+void pokemon::newpokeSkills() {
+	// 1. learnableSkills를 순회하며 현재 레벨 이하의 기술이 있는지 확인
+	for (auto it = learnableSkills.begin(); it != learnableSkills.end(); ) {
+
+		if (it->level <= getlevel()) {
+			// [기술 추가 로직]
+			if (currentSkills.size() >= 4) {
+				// 이미 4개라면 가장 오래된(0번 인덱스) 기술 제거
+
+				currentSkills.erase(currentSkills.begin());
+			}
+
+
+			currentSkills.push_back(*it);
+
+			// 2. [목록에서 제거] 배운 기술은 learnableSkills에서 삭제
+			it = learnableSkills.erase(it);
+
+		}
+		else {
+			// 배울 레벨이 안 된 기술은 그냥 패스
 			++it;
 		}
 	}
