@@ -1,10 +1,15 @@
-#include <iostream>
-#include "game.h"
+﻿#include<iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <cmath>
+#include"pokemon.h"
+#include"gastly.h"
 
 int main() {
 	int choice;
 
-	std::system("cls");
+	/*std::system("cls");
 
 	while (true) {
 		std::cout << "\n===== GAME MENU =====" << std::endl;
@@ -37,5 +42,38 @@ int main() {
 		default:
 			std::cout << "Invalid input!" << std::endl;
 		}
-	}
+	}*/
+
+	gastly* myGhost = new gastly(35, "고옹이");
+	gastly* enermyGhost = new gastly(20, "패롱이");
+	myGhost->ShowInfo(); std::cout << "\n";
+	enermyGhost->ShowInfo(); std::cout << "\n";
+
+	myGhost->levelup();std::cout << "\n"; // 레벨 차면 알아서 스킬 배움
+
+	myGhost->ShowInfo();std::cout << "\n";
+
+	enermyGhost->ShowInfo();std::cout << "\n";
+	enermyGhost->selectattack(myGhost, 2);
+
+	myGhost->ShowInfo(); std::cout << "\n";
+	enermyGhost->ShowInfo(); std::cout << "\n";
+
+	std::cout << "\n";
+	myGhost->levelup();
+	std::cout << "\n";
+	enermyGhost->ShowInfo();
+	std::cout << "\n";
+	enermyGhost->selectattack(myGhost,2);
+	std::cout << "\n";
+	enermyGhost->ShowInfo();
+	std::cout << "\n";
+	myGhost->selectattack(enermyGhost, 2);
+	std::cout << "\n";
+	enermyGhost->ShowInfo();
+
+
+
+
+
 }

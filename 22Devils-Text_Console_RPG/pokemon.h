@@ -76,22 +76,22 @@ struct Skill // 포켓몬이 가지는 스킬
 class pokemon {
 public:
 	pokemon() {
-		std::string randomNature = getRandomNature();
-		applyNatureEffect(randomNature);
+		std::string randomNature = getRandomNature(); // 랜덤한 성격을 조정해주는 random씨드
+		//applyNatureEffect(randomNature); // 성격 조정
 	}
 	virtual ~pokemon() {}
 
 	// 생성자속에서 해볼만한 일
 	void newpokescale(const int nowlevel); // 적, 우리 포켓몬 레벨에 따른 능력치조정
 	void levelscale(const int nowlevel); // 플레이어의 레벨을 받아 포켓몬 스텟 조정
-	void updateSkills(); // 포켓몬 레벨업시 스킬추가 혹은 4개 이상 소지면 삭제 후 스킬추가함
 	void newSkills(const int index); // 포켓몬 생성시 자동으로 스킬 들어가게해줌
+	void updateSkills(); // 포켓몬 레벨업시 스킬추가 혹은 4개 이상 소지면 삭제 후 스킬추가함
 
 	void warstat(); // 전투스탯
 
 	void levelup();
 
-	std::string getRandomNature() {
+	std::string getRandomNature() { // 이건 볼필요없음
 		// static을 사용하여 프로그램 실행 중 딱 한 번만 벡터를 채웁니다.
 		static std::vector<std::string> natureNames;
 
@@ -106,8 +106,8 @@ public:
 		return natureNames[randomIndex];
 	}
 
-	void applyNatureEffect(std::string nName) {
-		if (natureChart.find(nName) == natureChart.end()) return;
+	std::string applyNatureEffect(std::string nName) {
+		if (natureChart.find(nName) == natureChart.end()) return "";
 
 		Nature n = natureChart[nName];
 
@@ -126,10 +126,13 @@ public:
 		else if (n.downStat == "speed") this->speed *= 0.9f;
 
 		std::cout << nName << " 성격이 적용되었습니다!\n";
+		return { n.name };
 	}
 
 
-
+	inline void levelmaxhp(const int level) {
+		maxhp += hpGrowth * level;
+	}
 	inline void levelhp(const int level) { // 레벨업을 상정하고 만든 능력치 set. 
 		hp += hpGrowth * level;
 	}
@@ -149,6 +152,7 @@ public:
 		speed += speedGrowth * level;
 	}
 
+
 	inline void setname(const std::string& name) { // 일반적인 set get 함수
 		this->name = name;
 	};
@@ -158,8 +162,11 @@ public:
 	inline void setlevel(const int level) {
 		this->level = level;
 	}
-	inline void sethp(const float hp) {
-		this->hp = hp;
+	inline void setmaxhp(const float hp) {
+		this->maxhp = hp;
+	}
+	inline void sethp(const int level) { // 레벨업을 상정하고 만든 능력치 set. 
+		hp += hpGrowth * level;
 	}
 	inline void setattack(const float attack) {
 		this->attack = attack;
@@ -176,7 +183,9 @@ public:
 	inline void setspeed(const float speed) {
 		this->speed = speed;
 	}
-
+	inline int getmaxhp() const {
+		return static_cast<int>(maxhp);
+	}
 	inline int gethp() const {
 		return static_cast<int>(hp);
 	}
@@ -202,7 +211,12 @@ public:
 
 
 
-	//void ShowInfo() const;
+	void ShowInfo() const {
+		std::cout << "|| HP : " << getmaxhp() << "/" << gethp() << " || " << "Lv. " << getlevel() << " || Atk : " << getattack()
+			<< " || Def : " << getdefense() << " || SAtk : " << getspecialAttack() << " || SDef : " << getspecialDefense() << " || Spd : " << getspeed()
+			;
+	};
+
 	void selectattack(pokemon* enemy, int index) {
 		Skill& selected = currentSkills[index];
 
@@ -230,8 +244,8 @@ public:
 		}
 
 		// 4. 공격력/방어력 결정 (Physical vs Special)
-		float A = (selected.category == "Physical") ? this->attack : this->specialAttack;
-		float D = (selected.category == "Physical") ? enemy->defense : enemy->specialDefense;
+		float A = (selected.category == "Physical") ? this->warattack : this->warspecialAttack;
+		float D = (selected.category == "Physical") ? enemy->wardefense : enemy->warspecialDefense;
 
 		// 5. 데미지 공식 적용
 		int finalDamage = 0;
@@ -272,7 +286,8 @@ public:
 protected:
 	std::string name;//포켓몬 별명
 	std::string realname; //포켓몬 고유 이름
-	float maxhp;
+	std::string nature; // 성격
+	int maxhp;
 	float hp; // 기본 능력치
 	float attack;
 	float defense;
