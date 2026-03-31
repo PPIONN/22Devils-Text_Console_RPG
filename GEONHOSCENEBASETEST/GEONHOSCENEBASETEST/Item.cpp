@@ -46,6 +46,13 @@ void Item::BuyFHPPotion(Player& player) {
 void Item::UseFHPPotion(Player& player, Pokemon* poke) {
 	if (poke == nullptr) return;
 	if (player.HasItem("FHPPotion")) {
+		float currentHp = poke->gethp();
+		float maxHp = poke->getmaxhp();
+
+		if (currentHp >= maxHp) {
+			cout << "이미 체력이 가득 차 있습니다!" << endl;
+			return;
+		}
 		poke->sethp(poke->getmaxhp()); // 최대 체력으로 설정
 		player.RemoveItem("FHPPotion");
 		cout << poke->getName() << "의 체력이 모두 회복되었습니다!" << endl;
@@ -64,8 +71,9 @@ void Item::UsePowerPotion(Player& player, Pokemon* poke) {
 	if (player.HasItem("PowerPotion")) {
 		// 기존 poke->atk += 20 로직을 sethp/getattack으로 안전하게 수정
 		poke->setattack(poke->getattack() + 20);
+		poke->setspecialAttack(poke->getspecialAttack() + 20);
 		player.RemoveItem("PowerPotion");
-		cout << poke->getName() << "의 공격력이 20 증가했습니다!" << endl;
+		cout << poke->getName() << "의 공격력 및 특수공격력이 20 증가했습니다!" << endl;
 	}
 }
 

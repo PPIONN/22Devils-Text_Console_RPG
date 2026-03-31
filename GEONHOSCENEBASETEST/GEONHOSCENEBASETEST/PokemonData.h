@@ -7,16 +7,13 @@
 
 using namespace std;
 
-// [해결] Monster 정의를 새로 하지 않고 GameData.h에 있는 것을 사용합니다.
-// 만약 GameData.h에 Monster 정의가 없다면 아래 주석을 해제하세요.
-// class Monster : public Pokemon {}; 
-
 // --- 1. 고오스 (Gastly) ---
 class Gastly : public Monster {
 public:
 	Gastly(int lv) {
-		// 부모 클래스(Pokemon)에서 물려받은 변수들에 값 할당
-		name = "Gastly"; type = "Ghost"; level = lv;
+		name = "Gastly";
+		type = { "Ghost", "Poison" }; // 복합 타입 수정
+		level = lv;
 		hp = 10.0f; attack = 4.0f; defense = 3.0f;
 		specialAttack = 10.0f; specialDefense = 4.0f; speed = 8.0f;
 
@@ -36,12 +33,13 @@ public:
 	}
 };
 
-
 // --- 2. 잠만보 (Snorlax) ---
 class Snorlax : public Monster {
 public:
 	Snorlax(int lv) {
-		name = "Snorlax"; type = "Normal"; level = lv;
+		name = "Snorlax";
+		type = { "Normal" }; // 단일 타입도 중괄호 사용
+		level = lv;
 		hp = 20.0f; attack = 11.0f; defense = 6.0f; specialAttack = 6.0f; specialDefense = 11.0f; speed = 3.0f;
 		hpGrowth = 4.55f; attackGrowth = 3.15f; defenseGrowth = 1.85f; specialAttackGrowth = 1.65f; specialDefenseGrowth = 3.15f; speedGrowth = 0.85f;
 		newpokescale(lv);
@@ -61,7 +59,9 @@ public:
 class Magikarp : public Monster {
 public:
 	Magikarp(int lv) {
-		name = "Magikarp"; type = "Water"; level = lv;
+		name = "Magikarp";
+		type = { "Water" };
+		level = lv;
 		hp = 8.0f; attack = 2.0f; defense = 6.0f; specialAttack = 2.0f; specialDefense = 4.0f; speed = 8.0f;
 		hpGrowth = 1.25f; attackGrowth = 0.55f; defenseGrowth = 1.85f; specialAttackGrowth = 0.55f; specialDefenseGrowth = 1.05f; speedGrowth = 1.85f;
 		newpokescale(lv);
@@ -79,7 +79,9 @@ public:
 class Wobbuffet : public Monster {
 public:
 	Wobbuffet(int lv) {
-		name = "Wobbuffet"; type = "Psychic"; level = lv;
+		name = "Wobbuffet";
+		type = { "Psychic" };
+		level = lv;
 		hp = 35.0f; attack = 2.0f; defense = 6.0f; specialAttack = 2.0f; specialDefense = 6.0f; speed = 3.0f;
 		hpGrowth = 6.55f; attackGrowth = 0.35f; defenseGrowth = 1.45f; specialAttackGrowth = 0.35f; specialDefenseGrowth = 1.45f; speedGrowth = 0.65f;
 		newpokescale(lv);
@@ -93,11 +95,13 @@ public:
 	}
 };
 
-// --- 5. 치랑랑 (Chimecho) ---
+// --- 5. 치렁 (Chimecho) ---
 class Chimecho : public Monster {
 public:
 	Chimecho(int lv) {
-		name = "Chimecho"; type = "Psychic"; level = lv;
+		name = "Chimecho";
+		type = { "Psychic" };
+		level = lv;
 		hp = 14.0f; attack = 6.0f; defense = 7.0f; specialAttack = 9.0f; specialDefense = 8.0f; speed = 6.0f;
 		hpGrowth = 2.25f; attackGrowth = 1.55f; defenseGrowth = 2.05f; specialAttackGrowth = 2.65f; specialDefenseGrowth = 2.45f; speedGrowth = 1.65f;
 		newpokescale(lv);
@@ -117,7 +121,9 @@ public:
 class Gible : public Monster {
 public:
 	Gible(int lv) {
-		name = "Gible"; type = "Dragon/Ground"; level = lv;
+		name = "Gible";
+		type = { "Dragon", "Ground" };
+		level = lv;
 		hp = 12.0f; attack = 7.0f; defense = 5.0f; specialAttack = 5.0f; specialDefense = 5.0f; speed = 5.0f;
 		hpGrowth = 2.45f; attackGrowth = 2.35f; defenseGrowth = 1.45f; specialAttackGrowth = 1.25f; specialDefenseGrowth = 1.45f; speedGrowth = 1.35f;
 		newpokescale(lv);
@@ -137,7 +143,9 @@ public:
 class Cyndaquil : public Monster {
 public:
 	Cyndaquil(int lv) {
-		name = "Cyndaquil"; type = "Fire"; level = lv;
+		name = "Cyndaquil";
+		type = { "Fire" };
+		level = lv;
 		hp = 10.0f; attack = 5.0f; defense = 4.0f; specialAttack = 6.0f; specialDefense = 5.0f; speed = 7.0f;
 		hpGrowth = 1.85f; attackGrowth = 1.15f; defenseGrowth = 0.95f; specialAttackGrowth = 1.65f; specialDefenseGrowth = 1.15f; speedGrowth = 1.65f;
 		newpokescale(lv);
@@ -157,7 +165,9 @@ public:
 class Empoleon : public Monster {
 public:
 	Empoleon(int lv) {
-		name = "Empoleon"; type = "Water/Steel"; level = lv;
+		name = "Empoleon";
+		type = { "Water", "Steel" };
+		level = lv;
 		hp = 12.0f; attack = 6.0f; defense = 6.0f; specialAttack = 8.0f; specialDefense = 8.0f; speed = 5.0f;
 		hpGrowth = 2.45f; attackGrowth = 1.85f; defenseGrowth = 2.15f; specialAttackGrowth = 2.85f; specialDefenseGrowth = 2.65f; speedGrowth = 1.45f;
 		newpokescale(lv);
@@ -177,12 +187,14 @@ public:
 class Lucario : public Monster {
 public:
 	Lucario(int lv) {
-		name = "Lucario"; type = "Fighting/Steel"; level = lv;
+		name = "Lucario";
+		type = { "Fighting", "Steel" };
+		level = lv;
 		hp = 10.0f; attack = 8.0f; defense = 5.0f; specialAttack = 8.0f; specialDefense = 5.0f; speed = 7.0f;
 		hpGrowth = 2.15f; attackGrowth = 3.25f; defenseGrowth = 1.85f; specialAttackGrowth = 3.15f; specialDefenseGrowth = 1.85f; speedGrowth = 2.65f;
 		newpokescale(lv);
 		learnableSkills = {
-			{"Quick Attack", "Normal", "Physical", 40, 100, 30, 30, 1}, {"Detect", "Fighting", "Status", 0, 100, 5, 5, 1},
+			{"Quick Attack", "Normal", "Physical", 40, 100, 30, 30, 8}, {"Detect", "Fighting", "Status", 0, 100, 5, 5, 8},
 			{"Metal Claw", "Steel", "Physical", 50, 95, 35, 35, 5}, {"Counter", "Fighting", "Physical", 0, 100, 20, 20, 11},
 			{"Force Palm", "Fighting", "Physical", 60, 100, 10, 10, 15}, {"Bone Rush", "Ground", "Physical", 25, 80, 10, 10, 19},
 			{"Screech", "Normal", "Status", 0, 85, 40, 40, 24}, {"Aura Sphere", "Fighting", "Special", 80, 100, 20, 20, 29},
@@ -197,7 +209,9 @@ public:
 class Gardevoir : public Monster {
 public:
 	Gardevoir(int lv) {
-		name = "Gardevoir"; type = "Psychic/Fairy"; level = lv;
+		name = "Gardevoir";
+		type = { "Psychic", "Fairy" };
+		level = lv;
 		hp = 11.0f; attack = 6.0f; defense = 6.0f; specialAttack = 9.0f; specialDefense = 9.0f; speed = 7.0f;
 		hpGrowth = 2.05f; attackGrowth = 1.55f; defenseGrowth = 1.65f; specialAttackGrowth = 3.25f; specialDefenseGrowth = 3.15f; speedGrowth = 2.15f;
 		newpokescale(lv);
@@ -217,7 +231,9 @@ public:
 class Garchomp : public Monster {
 public:
 	Garchomp(int lv) {
-		name = "Garchomp"; type = "Dragon/Ground"; level = lv;
+		name = "Garchomp";
+		type = { "Dragon", "Ground" };
+		level = lv;
 		hp = 15.0f; attack = 9.0f; defense = 7.0f; specialAttack = 6.0f; specialDefense = 6.0f; speed = 8.0f;
 		hpGrowth = 3.15f; attackGrowth = 3.55f; defenseGrowth = 2.45f; specialAttackGrowth = 1.85f; specialDefenseGrowth = 2.15f; speedGrowth = 2.75f;
 		newpokescale(lv);
@@ -236,7 +252,9 @@ public:
 class Tyranitar : public Monster {
 public:
 	Tyranitar(int lv) {
-		name = "Tyranitar"; type = "Rock/Dark"; level = lv;
+		name = "Tyranitar";
+		type = { "Rock", "Dark" };
+		level = lv;
 		hp = 14.0f; attack = 9.0f; defense = 8.0f; specialAttack = 7.0f; specialDefense = 7.0f; speed = 5.0f;
 		hpGrowth = 2.85f; attackGrowth = 3.45f; defenseGrowth = 2.85f; specialAttackGrowth = 2.15f; specialDefenseGrowth = 2.55f; speedGrowth = 1.65f;
 		newpokescale(lv);

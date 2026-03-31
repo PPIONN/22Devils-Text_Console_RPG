@@ -36,6 +36,7 @@ extern int g_playerGold, g_currentFloor;
 // [핵심 추가] 객체 형태의 전역 변수 선언
 extern Player g_player;        // 플레이어 객체 본체
 extern Pokemon* g_playerPoke;  // 플레이어의 파트너 포켓몬 포인터
+extern vector<Pokemon*> g_playerParty; // 플레이어의 파티 포켓몬
 
 // [추가] 중복 방지 스폰 풀 (vector 에러 방지용)
 extern vector<string> g_normalPool;

@@ -74,5 +74,8 @@
     <ClInclude Include="StarterData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="natureChart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

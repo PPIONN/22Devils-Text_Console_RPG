@@ -47,7 +47,7 @@ void Player::InventoryUI() {
 		else if (item == "randomgold") Item::Userandomgold(*this);
 
 		// 사용한 아이템 삭제
-		RemoveItem(item);
+		// RemoveItem(item); - 이현준 아이템 사용안해도 사용한 이유.
 		Sleep(1000);
 		break;
 	}

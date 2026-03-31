@@ -14,7 +14,7 @@ int g_playerGold = 500;
 
 // 2. 가장 중요한 포켓몬 포인터
 Pokemon* g_playerPoke = nullptr;
-
+vector<Pokemon*> g_playerParty;
 // 3. 몬스터 스폰 풀 (일반 12마리 + 전설 3마리)
 vector<string> g_normalPool = {
 	"Gastly", "Snorlax", "Magikarp", "Wobbuffet", "Chimecho", "Gible",

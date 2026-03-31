@@ -72,15 +72,18 @@ void scene2() {
 			talk("오박사", "허허, 장난치지 말고 하나를 골라보려무나.");
 			continue;
 		}
-
+		g_playerParty.push_back(g_playerPoke);
 		talk("오박사", g_starterName + "은(는) 정말 탁월한 선택일세!");
 		talk("시스템", g_starterName + "이(가) 파트너가 되었습니다! (LV.5)");
+		talk("오박사", g_starterName + "의 성격은 " + g_playerPoke->getNature() + "일세.");
 		selectionDone = true;
 	}
 
 	// --- [3. 보너스 시퀀스] ---
 	talk("오박사", "..음? 저기 구석에 있는 저 친구는 누군가?");
 	talk("오박사", "허허, 이 고오스(Gastly)도 자네를 따라가고 싶은 모양이구먼.");
+	Pokemon* bonusPoke = new Gastly(10);
+	g_playerParty.push_back(bonusPoke);
 	talk("오박사", "연구소에 두는 것보다 자네와 함께 넓은 세상을 보는 게 나을 걸세.");
 	talk("시스템", "여행 가방에 포션(Potion)과 약간의 골드가 추가되었습니다!");
 
