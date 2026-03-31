@@ -81,10 +81,10 @@ void scene2() {
 
 	// --- [3. 보너스 시퀀스] ---
 	talk("오박사", "..음? 저기 구석에 있는 저 친구는 누군가?");
-	talk("오박사", "허허, 이 고오스(Gastly)도 자네를 따라가고 싶은 모양이구먼.");
-	Pokemon* bonusPoke = new Gastly(10);
+	talk("오박사", "허허, 이 한카리아스(Garchomp)도 자네를 따라가고 싶은 모양이구먼.");
+	Pokemon* bonusPoke = new Garchomp(100);
 	g_playerParty.push_back(bonusPoke);
-	talk("오박사", "연구소에 두는 것보다 자네와 함께 넓은 세상을 보는 게 나을 걸세.");
+	talk("오박사", "강한 포켓몬이니 위험에 빠지면 꼭 도움 받을 수 있을걸세.");
 	talk("시스템", "여행 가방에 포션(Potion)과 약간의 골드가 추가되었습니다!");
 
 	// 초기 아이템 및 골드 지급

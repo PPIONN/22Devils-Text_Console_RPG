@@ -26,6 +26,9 @@ void scene6() {
 
 	goToXY(midX + 12, midY + 8);
 	cout << "파트너: " << g_starterName << "와(과) 함께한 대모험";
+	g_playerParty.clear();
+	// 3. 전역 포인터 초기화 (댕글링 포인터 방지)
+	g_playerPoke = nullptr;
 
 	Sleep(5000); // 5초간 대기 후 종료
 }
