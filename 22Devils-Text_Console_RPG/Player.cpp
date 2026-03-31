@@ -115,6 +115,21 @@ int Player::getmoney() const
 {
 	return money;
 }
+// 인덱스 번호를 넣으면 해당 포켓몬의 포인터를 반환하는 함수
+pokemon* Player::getPokemon(int index)
+{
+	// 잘못된 번호를 입력했을 때 프로그램이 터지는 것을 방지 (안전장치)
+	if (index >= 0 && index < mypokemon.size())
+	{
+		return mypokemon[index].get();
+	}
+	return nullptr; // 잘못된 인덱스면 빈 포인터 반환
+}
+// 현재 보유 중인 포켓몬 수를 반환하는 함수 (UI 예외 처리에 유용함)
+int Player::getPokemonCount() const
+{
+	return mypokemon.size();
+}
 // 능력치/소지금 확인
 void Player::ShowStatus() //const
 {

@@ -52,6 +52,8 @@ public:
 	bool isAllFainted() const;
 	void selectPokemon(bool IsBattle);
 	pokemon* changePokemon();
+	pokemon* getPokemon(int index);
+	int getPokemonCount() const;
 
 	//오채율 - AddItem 함수 추가(vector inventory에 아이템 명 추가)
 	void AddItem(const std::string& itemName);
