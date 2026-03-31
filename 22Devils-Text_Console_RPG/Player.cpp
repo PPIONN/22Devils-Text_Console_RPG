@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <cmath>
 #include <iostream>
+#include <synchapi.h>
 
 // 생성자/소멸자
 Player::Player(std::string playername) : playername(playername)
@@ -113,6 +114,21 @@ int Player::getexp() const
 int Player::getmoney() const
 {
 	return money;
+}
+// 인덱스 번호를 넣으면 해당 포켓몬의 포인터를 반환하는 함수
+pokemon* Player::getPokemon(int index)
+{
+	// 잘못된 번호를 입력했을 때 프로그램이 터지는 것을 방지 (안전장치)
+	if (index >= 0 && index < mypokemon.size())
+	{
+		return mypokemon[index].get();
+	}
+	return nullptr; // 잘못된 인덱스면 빈 포인터 반환
+}
+// 현재 보유 중인 포켓몬 수를 반환하는 함수 (UI 예외 처리에 유용함)
+int Player::getPokemonCount() const
+{
+	return mypokemon.size();
 }
 // 능력치/소지금 확인
 void Player::ShowStatus() //const
@@ -360,6 +376,25 @@ void Player::AddPokemon(std::unique_ptr<pokemon> newpokemon)
 	}
 }
 
+// 생사감별기
+bool Player::isAllFainted() const
+{
+	// 보유 포켓몬이 아예 없는 경우(버그 상황) 전멸로 판정
+	if (mypokemon.empty())
+	{
+		return true;
+	}
+
+	for (const auto& p : mypokemon)
+	{
+		// 하나라도 살아있는 포켓몬이 있다면 false
+		if (p && p->gethp() > 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
 // 포켓몬 리스트를 펼쳐주는 함수
 void Player::MyPokemonUI()
 {
@@ -378,66 +413,119 @@ pokemon* Player::getLeadPokemon()
 	return mypokemon.empty() ? nullptr : mypokemon[0].get();
 }
 
-void Player::selectPokemon()
+void Player::selectPokemon(bool IsBattle)
 {
 	int si;
-	bool IsBattle = false;
-	MyPokemonUI();
 	while (true)
 	{
-		if (!(std::cin >> si))
-		{
-			std::cout << "Error" << std::endl;
+		system("cls");
+		MyPokemonUI(); // 현재 보유 포켓몬 리스트 출력
 
+		std::cout << "\n포켓몬 번호를 선택하세요 (0: 돌아가기): ";
+		if (!(std::cin >> si)) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			continue;
 		}
-		int a = 0;
-		std::cout << "selected : " << mypokemon[si - 1] /*포켓몬 이름*/ << std::endl;
-		std::cout << "What to do?" << std::endl;
-		/*배틀 중일 때만*/
-		std::cout << "1. Change this Pokemon" << std::endl;
-		std::cout << "2. Use Item" << std::endl;
-		/*비전투 때만*/
-		std::cout << "3. Release this Pokemon" << std::endl;
-		std::cout << "4. Cancel" << std::endl;
-		std::cin >> a;
-		switch (a)
+
+		if (si == 0) break;
+		if (si < 1 || si > mypokemon.size()) {
+			std::cout << "잘못된 번호입니다." << std::endl;
+			Sleep(500);
+			continue;
+		}
+
+		// --- 메뉴 동적 생성 구간 ---
+		std::vector<std::string> menuOptions;
+		if (IsBattle)
 		{
-		case 1:
-			if (IsBattle = true)
-			{
-				changePokemon();
-			}
-			else
-			{
-				std::cout << "Not in Battle" << std::endl;
-			}
-			break;
-		case 2:
+			menuOptions.push_back("교체 (Change)");
+		}
+		menuOptions.push_back("아이템 사용 (Item)");
+		if (!IsBattle)
+		{
+			menuOptions.push_back("놓아주기 (Release)");
+		}
+		menuOptions.push_back("취소 (Cancel)");
+
+		int a = 0;
+		std::cout << "\n[ " << mypokemon[si - 1]->getname() << " 선택됨 ]" << std::endl;
+
+		// 메뉴를 1번부터 순서대로 출력
+		for (int i = 0; i < menuOptions.size(); ++i) {
+			std::cout << (i + 1) << ". " << menuOptions[i] << std::endl;
+		}
+
+		std::cout << "선택: ";
+		std::cin >> a;
+
+		// 선택한 번호의 메뉴 텍스트를 가져옴
+		if (a < 1 || a > menuOptions.size()) {
+			std::cout << "잘못된 선택입니다." << std::endl;
+			Sleep(500);
+			continue;
+		}
+
+		std::string selectedMenu = menuOptions[a - 1];
+
+		// --- 메뉴 텍스트 기반 기능 실행 ---
+		if (selectedMenu == "교체 (Change)") {
+			changePokemon();
+			return;
+		}
+		else if (selectedMenu == "아이템 사용 (Item)") {
 			InventoryUI();
-			break;
-		case 3:
-			if (IsBattle = false)
-			{
+			// 아이템 사용 후 보통은 해당 포켓몬에게 적용되므로 리스트로 돌아감
+		}
+		else if (selectedMenu == "놓아주기 (Release)") {
+			if (mypokemon.size() > 1) {
+				std::cout << mypokemon[si - 1]->getname() << "을(를) 보냈습니다." << std::endl;
 				mypokemon.erase(mypokemon.begin() + si - 1);
+				Sleep(1000);
+				return;
 			}
-			else
-			{
-				std::cout << "Cannot do that in Battle" << std::endl;
-				break;
+			else {
+				std::cout << "마지막 포켓몬은 놓아줄 수 없습니다!" << std::endl;
+				Sleep(1000);
 			}
-			break;
-		default:
-			break;
+		}
+		else if (selectedMenu == "취소 (Cancel)") {
+			return;
 		}
 	}
 }
 
-void Player::changePokemon()
+pokemon* Player::changePokemon()
 {
-	//미구현
+	system("cls");
+	MyPokemonUI(); // 목록 보여주기
+
+	int choice;
+	std::cout << "\n교체할 포켓몬의 번호를 선택하세요 (0: 취소): ";
+	if (!(std::cin >> choice) || choice == 0) return nullptr;
+
+	if (choice < 1 || choice > mypokemon.size()) {
+		std::cout << "잘못된 선택입니다." << std::endl;
+		return nullptr;
+	}
+
+	// 기절한 포켓몬은 내보낼 수 없음
+	if (mypokemon[choice - 1]->gethp() <= 0) {
+		std::cout << mypokemon[choice - 1]->getname() << "은(는) 이미 기절해서 싸울 수 없다!" << std::endl;
+		Sleep(1000);
+		return nullptr;
+	}
+
+	// 선택한 포켓몬을 리스트의 맨 앞(0번)으로 보내서 선두로 설정
+	std::swap(mypokemon[0], mypokemon[choice - 1]);
+
+	std::cout << "가라! " << mypokemon[0]->getname() << "!" << std::endl;
+	Sleep(1000);
+
+	return mypokemon[0].get(); // 새로 선두가 된 포켓몬의 주소 반환
 }
 
-// 스타팅 포켓몬 파일 내에 같이 정의. 기술은 아직 안바꿈
+// 스타팅 포켓몬 파일 내에 같이 정의
 Charmander::Charmander(Player* player) : pokemon::pokemon() // 파이리
 {
 	owner = player;
@@ -461,20 +549,18 @@ Charmander::Charmander(Player* player) : pokemon::pokemon() // 파이리
 	this->type = { "Fire" };
 	this->learnableSkills =
 	{
-		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
-		{ "Lick", "Ghost", "Physical", 20, 100, 30, 0 },
-		{ "Spite", "Ghost", "Status", 0, 100, 10, 5 },
-		{ "Mean Look", "Normal", "Status", 0, -1, 5, 8 },
-		{ "Curse", "Unknown", "Status", 0, -1, 10, 12 },
-		{ "Night Shade", "Ghost", "Special", 0, 100, 15, 15 },
-		{ "Confuse Ray", "Ghost", "Status", 0, 100, 10, 19 },
-		{ "Sucker Punch", "Dark", "Physical", 80, 100, 5, 22 },
-		{ "Payback", "Dark", "Physical", 50, 100, 10, 26 },
-		{ "Shadow Ball", "Ghost", "Special", 80, 100, 15, 29 },
-		{ "Dream Eater", "Psychic", "Special", 100, 100, 15, 33 },
-		{ "Dark Pulse", "Dark", "Special", 80, 100, 15, 36 },
-		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
-		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
+	{"Scratch", "Normal", "Physical", 40, 100, 35, 1},
+	{"Growl", "Normal", "Status", 0, 100, 40, 1},
+	{"Ember", "Fire", "Special", 40, 100, 25, 4},
+	{"Smokescreen", "Normal", "Status", 0, 100, 20, 8},
+	{"Dragon Breath", "Dragon", "Special", 60, 100, 20, 12},
+	{"Fire Fang", "Fire", "Physical", 65, 95, 15, 17},
+	{"Slash", "Normal", "Physical", 70, 100, 20, 20},
+	{"Flamethrower", "Fire", "Special", 90, 100, 15, 24},
+	{"Scary Face", "Normal", "Status", 0, 100, 10, 28},
+	{"Fire Spin", "Fire", "Special", 35, 85, 15, 32},
+	{"Inferno", "Fire", "Special", 100, 50, 5, 36},
+	{"Flare Blitz", "Fire", "Physical", 120, 100, 15, 40}
 	};
 	this->newpokeSkills();
 }
@@ -502,21 +588,20 @@ Squirtle::Squirtle(Player* player) : pokemon::pokemon() // 꼬부기
 	this->type = { "Water" };
 	this->learnableSkills =
 	{
-		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
-		{ "Lick", "Ghost", "Physical", 20, 100, 30, 0 },
-		{ "Spite", "Ghost", "Status", 0, 100, 10, 5 },
-		{ "Mean Look", "Normal", "Status", 0, -1, 5, 8 },
-		{ "Curse", "Unknown", "Status", 0, -1, 10, 12 },
-		{ "Night Shade", "Ghost", "Special", 0, 100, 15, 15 },
-		{ "Confuse Ray", "Ghost", "Status", 0, 100, 10, 19 },
-		{ "Sucker Punch", "Dark", "Physical", 80, 100, 5, 22 },
-		{ "Payback", "Dark", "Physical", 50, 100, 10, 26 },
-		{ "Shadow Ball", "Ghost", "Special", 80, 100, 15, 29 },
-		{ "Dream Eater", "Psychic", "Special", 100, 100, 15, 33 },
-		{ "Dark Pulse", "Dark", "Special", 80, 100, 15, 36 },
-		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
-		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
-	};
+	{"Tackle", "Normal", "Physical", 40, 100, 35, 1},
+	{"Tail Whip", "Normal", "Status", 0, 100, 30, 1},
+	{"Water Gun", "Water", "Special", 40, 100, 25, 3},
+	{"Withdraw", "Water", "Status", 0, 100, 40, 6},
+	{"Rapid Spin", "Normal", "Physical", 50, 100, 40, 9},
+	{"Bite", "Dark", "Physical", 60, 100, 25, 12},
+	{"Water Pulse", "Water", "Special", 60, 100, 20, 15},
+	{"Protect", "Normal", "Status", 0, 100, 10, 18},
+	{"Rain Dance", "Water", "Status", 0, 100, 5, 21},
+	{"Aqua Tail", "Water", "Physical", 90, 90, 10, 24},
+	{"Shell Smash", "Normal", "Status", 0, 100, 15, 27},
+	{"Iron Defense", "Steel", "Status", 0, 100, 15, 30},
+	{"Hydro Pump", "Water", "Special", 110, 80, 5, 33},
+	{"Skull Bash", "Normal", "Physical", 130, 100, 10, 36} };
 	this->newpokeSkills();
 }
 
@@ -543,20 +628,21 @@ Bulbasaur::Bulbasaur(Player* player) : pokemon::pokemon() // 이상해씨
 	this->type = { "Grass" };
 	this->learnableSkills =
 	{
-		{ "Hypnosis", "Psychic", "Status", 0, 60, 20, 0 },
-		{ "Lick", "Ghost", "Physical", 20, 100, 30, 0 },
-		{ "Spite", "Ghost", "Status", 0, 100, 10, 5 },
-		{ "Mean Look", "Normal", "Status", 0, -1, 5, 8 },
-		{ "Curse", "Unknown", "Status", 0, -1, 10, 12 },
-		{ "Night Shade", "Ghost", "Special", 0, 100, 15, 15 },
-		{ "Confuse Ray", "Ghost", "Status", 0, 100, 10, 19 },
-		{ "Sucker Punch", "Dark", "Physical", 80, 100, 5, 22 },
-		{ "Payback", "Dark", "Physical", 50, 100, 10, 26 },
-		{ "Shadow Ball", "Ghost", "Special", 80, 100, 15, 29 },
-		{ "Dream Eater", "Psychic", "Special", 100, 100, 15, 33 },
-		{ "Dark Pulse", "Dark", "Special", 80, 100, 15, 36 },
-		{ "Destiny Bond", "Ghost", "Status", 0, -1, 5, 40 },
-		{ "Nightmare", "Ghost", "Status", 0, -1, 15, 43 }
+	{"Tackle", "Normal", "Physical", 40, 100, 35, 1},
+	{"Growl", "Normal", "Status", 0, 100, 40, 1},
+	{"Vine Whip", "Grass", "Physical", 45, 100, 25, 3},
+	{"Growth", "Normal", "Status", 0, 100, 40, 6},
+	{"Leech Seed", "Grass", "Status", 0, 90, 10, 9},
+	{"Razor Leaf", "Grass", "Physical", 55, 95, 25, 12},
+	{"Poison Powder", "Poison", "Status", 0, 75, 35, 15},
+	{"Sleep Powder", "Grass", "Status", 0, 75, 15, 15},
+	{"Seed Bomb", "Grass", "Physical", 80, 100, 15, 18},
+	{"Take Down", "Normal", "Physical", 90, 85, 20, 21},
+	{"Sweet Scent", "Normal", "Status", 0, 100, 20, 24},
+	{"Synthesis", "Grass", "Status", 0, 100, 5, 27},
+	{"Worry Seed", "Grass", "Status", 0, 100, 10, 30},
+	{"Power Whip", "Grass", "Physical", 120, 85, 10, 33},
+	{"Solar Beam", "Grass", "Special", 120, 100, 10, 36}
 	};
 	this->newpokeSkills();
 }

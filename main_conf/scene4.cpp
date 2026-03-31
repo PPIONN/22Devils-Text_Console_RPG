@@ -89,23 +89,17 @@ void scene4() {
 	srand((unsigned int)time(NULL));
 	setFontSize(18);
 
-	// 1. 전투 시작 전
-
-	//선두 포켓몬 출전
+	// 1. 전투 준비
 	pokemon* MyPokemon = player->getLeadPokemon();
-	if (MyPokemon == nullptr)
-	{
-		cout << "Not Exist Pokemon for Fight" << endl;
+	if (MyPokemon == nullptr) {
+		cout << "전투 가능한 포켓몬이 없습니다." << endl;
 		return;
 	}
 
-	//임시로 채워둔 적 포켓몬 등장 로직
 	gastly* EnemyPokemon = new gastly(g_currentfloor, "Gastly");
+	string currentMsg = MyPokemon->getname() + "은(는) 무엇을 할까?";
 
-	// 이 부분 이름 getter 함수 없어서 테스트할 때는 	inline std::string getname() const { return name; } 임의로 만들어서 사용했음
-	string currentMsg = MyPokemon->getname() + "은(는) 무엇을 할까?           ";
-
-	// 3. 전투 루프
+	// 2. 전투 루프
 	while (MyPokemon->gethp() > 0 && EnemyPokemon->gethp() > 0) {
 		renderBattleUI(MyPokemon, EnemyPokemon, currentMsg);
 
@@ -114,39 +108,89 @@ void scene4() {
 		cout << "  선택: ";
 		if (!(cin >> choice)) { cin.clear(); cin.ignore(1000, '\n'); continue; }
 
+		bool turnUsed = false; // 턴 소모 여부 체크
+
 		if (choice == 4) { // 도망
 			renderBattleUI(MyPokemon, EnemyPokemon, "무사히 도망쳤다!                    ");
 			Sleep(1000);
 			delete EnemyPokemon;
 			return;
 		}
-		else if (choice == 1) { // 싸운다
+		else if (choice == 1) // 싸운다
+		{
 			system("cls");
-			// 속도 비교를 통한 선후공 판정
+			cout << "\n[ " << MyPokemon->getname() << "의 기술 선택 ]" << endl;
+			cout << "------------------------------------" << endl;
+			// Skill 구조체에 접근할 수 있는 getter가 없으므로 번호로 안내합니다. 기술 3개 이하일 때 입력값에 따라 크래시 위험 있음.
+			cout << "1. 첫 번째 기술" << endl;
+			cout << "2. 두 번째 기술" << endl;
+			cout << "3. 세 번째 기술" << endl;
+			cout << "4. 네 번째 기술" << endl;
+			cout << "0. 취소" << endl;
+			cout << "------------------------------------" << endl;
+			cout << "번호 선택: ";
+
+			int skillIdx;
+			if (!(cin >> skillIdx) || skillIdx == 0) continue;
+
+			// 인덱스 보정 (1~4 -> 0~3)
+			skillIdx -= 1;
+
+			// 전투 시작
+			system("cls");
+			// 1. 선후공 결정
 			pokemon* first = (MyPokemon->getspeed() >= EnemyPokemon->getspeed()) ? MyPokemon : EnemyPokemon;
 			pokemon* second = (MyPokemon->getspeed() >= EnemyPokemon->getspeed()) ? EnemyPokemon : MyPokemon;
 
-			// 첫 번째 공격
-			cout << "\n====================================\n";
-			first->selectattack(second, 0); // 임시로 0번 스킬 사용
-			cout << "====================================\n";
-			Sleep(1500);
+			for (int i = 0; i < 2; i++) {
+				pokemon* attacker = (i == 0) ? first : second;
+				pokemon* defender = (i == 0) ? second : first;
 
-			// 두 번째 공격 (첫 번째 공격으로 죽지 않았을 경우)
-			if (second->gethp() > 0) {
+				if (attacker->gethp() <= 0 || defender->gethp() <= 0) break;
+
 				cout << "\n====================================\n";
-				second->selectattack(first, 0);
+				if (attacker == MyPokemon) {
+					// 사용자가 선택한 기술 번호 전달
+					attacker->selectattack(defender, skillIdx);
+				}
+				else {
+					// 적은 0번 기술을 쓰거나 랜덤하게 사용
+					int enemySkill = rand() % 2;
+					attacker->selectattack(defender, enemySkill);
+				}
 				cout << "====================================\n";
 				Sleep(1500);
 			}
-			currentMsg = MyPokemon->getname() + "은(는) 무엇을 할까?           ";
+			currentMsg = MyPokemon->getname() + "은(는) 무엇을 할까?";
 		}
-		else if (choice == 2) {
+		else if (choice == 2) { // 가방
 			player->InventoryUI();
+			turnUsed = true;
+		}
+		else if (choice == 3) { // 포켓몬 교체
+			pokemon* oldPokemon = MyPokemon;
+
+			player->selectPokemon(true);
+			MyPokemon = player->getLeadPokemon(); // 선두 갱신
+
+			if (oldPokemon != MyPokemon) {
+				// 교체 성공 시: 적의 공격 페이즈로 강제 진입
+				currentMsg = MyPokemon->getname() + "로 교체되었다!";
+				renderBattleUI(MyPokemon, EnemyPokemon, currentMsg);
+				Sleep(1000);
+
+				// [적의 반격] 플레이어는 교체하느라 턴을 썼으므로 적만 공격
+				system("cls");
+				cout << "\n[상대방의 턴!]\n";
+				cout << "====================================\n";
+				EnemyPokemon->selectattack(MyPokemon, 0);
+				cout << "====================================\n";
+				Sleep(1500);
+			}
 		}
 	}
 
-	// 4. 전투 결과 처리
+	// 3. 전투 결과 처리 (동일)
 	system("cls");
 	if (EnemyPokemon->gethp() <= 0) {
 		int earnedGold = g_currentfloor * 50;
@@ -155,7 +199,6 @@ void scene4() {
 		cout << "\n\n  [전투 승리!] " << EnemyPokemon->getname() << "을(를) 물리쳤습니다!" << endl;
 		cout << "  >> 보상: " << earnedGold << " Gold와 " << earnedExp << " EXP를 획득했습니다." << endl;
 
-		// 실제 플레이어 스탯에 반영
 		player->setStatus(StatType::Money, earnedGold);
 		player->setStatus(StatType::EXP, earnedExp);
 	}
