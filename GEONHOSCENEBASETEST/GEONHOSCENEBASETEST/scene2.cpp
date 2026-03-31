@@ -1,5 +1,9 @@
 ﻿#include "Common.h"
+#include "PokemonData.h" // 일반 몬스터(고오스 등)용
+#include "StarterData.h" // [추가] 파이리, 꼬부기, 이상해씨 클래스가 여기 있습니다!
 #include <conio.h>
+
+extern Pokemon* g_playerPoke; // Data.cpp에 선언된 전역 포인터
 
 void scene2() {
 	Sleep(500);
@@ -8,6 +12,7 @@ void scene2() {
 	int w, h;
 	getActualSize(w, h);
 
+	// --- [1. 이름 입력] ---
 	int midX = (w / 2) - 20;
 	int midY = (h / 2) - 5;
 
@@ -23,10 +28,10 @@ void scene2() {
 
 	talk("오박사", g_playerName + "군 왔는가?");
 	talk("오박사", "오늘은 자네가 이 포켓몬 탑에 처음 들어가보는 날이 아닌가!");
-	talk("오박사", "아주 경사스러운 날이지!");
-	talk("오박사", "자네는 마침 운이 정말 좋아. 원래라면 자네보다 먼저왔을 내 아들이 하루 늦어진다지 뭔가!");
-	talk("오박사", "덕분에 아무래도 자네는 이 세 포켓몬중 원하는 아이를 파트너로 삼을 수 있겠군!");
+	talk("오박사", "자네는 마침 운이 정말 좋아. 내 아들이 하루 늦어진 덕분에...");
+	talk("오박사", "이 세 마리의 스타팅 포켓몬 중 원하는 아이를 파트너로 고를 수 있다네!");
 
+	// --- [2. 스타팅 포켓몬 선택 및 객체 생성] ---
 	bool selectionDone = false;
 	while (!selectionDone) {
 		system("cls");
@@ -47,23 +52,41 @@ void scene2() {
 		}
 		cin.ignore(1000, '\n');
 
-		if (choice == 1) g_starterName = "파이리";
-		else if (choice == 2) g_starterName = "꼬부기";
-		else if (choice == 3) g_starterName = "이상해씨";
+		// 기존에 혹시 데이터가 있다면 삭제 (메모리 누수 방지)
+		if (g_playerPoke != nullptr) delete g_playerPoke;
+
+		// [핵심] 선택한 번호에 따라 실제 클래스 객체 생성 (레벨 5로 시작)
+		if (choice == 1) {
+			g_playerPoke = new Charmander(5);
+			g_starterName = "파이리";
+		}
+		else if (choice == 2) {
+			g_playerPoke = new Squirtle(5);
+			g_starterName = "꼬부기";
+		}
+		else if (choice == 3) {
+			g_playerPoke = new Bulbasaur(5);
+			g_starterName = "이상해씨";
+		}
 		else {
 			talk("오박사", "허허, 장난치지 말고 하나를 골라보려무나.");
 			continue;
 		}
+
 		talk("오박사", g_starterName + "은(는) 정말 탁월한 선택일세!");
+		talk("시스템", g_starterName + "이(가) 파트너가 되었습니다! (LV.5)");
 		selectionDone = true;
 	}
 
-	talk("오박사", "..음?");
-	talk("오박사", "허허 어디서 들어왔는진 몰라도 자네, 이 친구도 데려가는 건 어떤가?");
-	talk("오박사", "좋군! 연구실에 모르는 포켓몬을 두고 있을 순 없어서 말이야.");
-	talk("오박사", "정없이 내쫓는 것 보단 자네를 따라가는게 나을거야.");
-	talk("오박사", "한번 원없이 세상을 둘러보고 오게. 넓은 세상이 자네를 기다리고 있어.");
-	talk("오박사", "그럼, 즐거운 여행을 시작하게나!");
+	// --- [3. 보너스 시퀀스] ---
+	talk("오박사", "..음? 저기 구석에 있는 저 친구는 누군가?");
+	talk("오박사", "허허, 이 고오스(Gastly)도 자네를 따라가고 싶은 모양이구먼.");
+	talk("오박사", "연구소에 두는 것보다 자네와 함께 넓은 세상을 보는 게 나을 걸세.");
+	talk("시스템", "여행 가방에 포션(Potion)과 약간의 골드가 추가되었습니다!");
+
+	// 초기 아이템 및 골드 지급
+	g_playerGold += 500;
+	g_player.AddItem("HPPotion");
 
 	system("cls");
 	getActualSize(w, h);
