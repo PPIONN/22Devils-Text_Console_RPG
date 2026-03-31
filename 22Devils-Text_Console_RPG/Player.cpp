@@ -283,7 +283,7 @@ void Player::ItemUse(Itemname item)
 		foruse.RareCandy(*this);
 		break;
 	case Itemname::HPPotion:
-		foruse.UseHPPotion(*this);
+		foruse.UseHPPotion(*this); // 요부분
 		break;
 	case Itemname::FHPPotion:
 		foruse.UseFHPPotion(*this);
@@ -292,7 +292,7 @@ void Player::ItemUse(Itemname item)
 		foruse.UseMultiLens(*this);
 		break;
 	case Itemname::PowerPorion:
-		foruse.UsePowerPotion(*this);
+		foruse.UsePowerPotion(*this); // 요 부분 
 		break;
 	case Itemname::randomexp:
 		foruse.Userandomexp(*this);
