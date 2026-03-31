@@ -1,18 +1,8 @@
-﻿#include <iostream>
-#include <string>
-#include <windows.h>
+﻿#include "Common.h"
+#include "GameData.h"
 
-
-
-using namespace std;
-
-extern void goToXY(int x, int y);
-extern void getActualSize(int& width, int& height);
-extern void talk(string name, string text);
-extern int g_playerGold;   // main.cpp 전역 변수
-extern int g_playerHP;     // main.cpp 전역 변수
-extern int g_playerMaxHP;
-extern int g_potionCount;
+// Data.cpp에 있는 플레이어 객체를 사용합니다.
+extern Player g_player;
 
 void scene5() {
 	int w, h;
@@ -22,43 +12,61 @@ void scene5() {
 	while (inShop) {
 		system("cls");
 		int midX = w / 2 - 25;
-		int midY = h / 2 - 5;
+		int midY = h / 2 - 10;
 
+		// 1. 상단 상태 정보 (현재 소지금 표시)
 		goToXY(midX, midY);     cout << "==================================================";
-		goToXY(midX, midY + 1); cout << "             [ 포켓몬 센터 & 상점 ]               ";
-		goToXY(midX, midY + 2); cout << "    현재 HP: " << g_playerHP << "/" << g_playerMaxHP;
-		goToXY(midX, midY + 3); cout << "    소지금 : " << g_playerGold << " Gold | 상처약: " << g_potionCount << "개";
-		goToXY(midX, midY + 4); cout << "==================================================";
-		goToXY(midX, midY + 6); cout << "  1. 전 회복 (300 Gold)";
-		goToXY(midX, midY + 7); cout << "  2. 상처약 구매 (150 Gold)";
-		goToXY(midX, midY + 8); cout << "  3. 다음 층으로 이동하기 (나가기)";
-		goToXY(midX, midY + 10); cout << "  선택: ";
+		goToXY(midX, midY + 1); cout << "             [ POKEMON CENTER & SHOP ]            ";
+		goToXY(midX, midY + 2); cout << "    YOUR GOLD : " << g_player.getmoney() << " G";
+		goToXY(midX, midY + 3); cout << "==================================================";
+
+		// 2. [핵심] 네가 Item.cpp에 작성한 "=== Item List ==="를 그대로 출력합니다.
+		//goToXY를 하지 않고 바로 호출하면 네가 만든 cout들이 순서대로 출력됩니다.
+		cout << "\n";
+		Item::ShowAllItems();
+
+		cout << "\n  Select Item Number: ";
 
 		int choice;
-		if (!(cin >> choice)) { cin.clear(); cin.ignore(1000, '\n'); continue; }
+		if (!(cin >> choice)) {
+			cin.clear();
+			cin.ignore(1000, '\n');
+			continue;
+		}
 
-		if (choice == 1) {
-			if (g_playerGold >= 300) {
-				g_playerGold -= 300;
-				g_playerHP = g_playerMaxHP;
-				cout << "\n    >> 몸이 가벼워졌습니다! HP가 모두 회복되었습니다.";
-			}
-			else cout << "\n    >> 골드가 부족합니다!";
-			Sleep(1000);
-		}
-		else if (choice == 2) {
-			if (g_playerGold >= 150) {
-				g_playerGold -= 150;
-				g_potionCount++;
-				cout << "\n    >> 상처약을 구매했습니다!";
-			}
-			else cout << "\n    >> 골드가 부족합니다!";
-			Sleep(1000);
-		}
-		else if (choice == 3) {
-			cout << "\n    >> 모험을 계속합니다...";
-			Sleep(1000);
+		// 3. 네가 만든 Buy 함수들과 1:1로 연결 (Item.cpp 로직 실행)
+		switch (choice) {
+		case 1:
+			Item::RareCandy(g_player);
+			break;
+		case 2:
+			Item::BuyHPPotion(g_player);
+			break;
+		case 3:
+			Item::BuyFHPPotion(g_player);
+			break;
+		case 4:
+			Item::BuyMultiLens(g_player);
+			break;
+		case 5:
+			Item::BuyPowerPotion(g_player);
+			break;
+		case 6:
+			Item::Buyrandomexp(g_player);
+			break;
+		case 7:
+			Item::Buyrandomgold(g_player);
+			break;
+		case 0:
+			cout << "\n    >> Leaving the shop...";
 			inShop = false;
+			break;
+		default:
+			cout << "\n    >> Invalid choice!";
+			break;
 		}
+
+		// 결과를 확인할 시간을 주기 위해 잠시 대기
+		Sleep(1200);
 	}
 }

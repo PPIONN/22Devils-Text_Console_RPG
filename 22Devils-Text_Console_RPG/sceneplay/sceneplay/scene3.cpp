@@ -1,18 +1,22 @@
 ﻿#include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #include <windows.h>
-#include <io.h>    
-#include <fcntl.h> 
-
-
+#include <conio.h>
+#include <io.h>
+#include <fcntl.h>
 
 using namespace std;
 
-extern void goToXY(int x, int y);
+// [외부 참조 선언 - main.cpp의 것을 빌려씀]
 extern void talk(string name, string text);
+extern void goToXY(int x, int y);
+extern void setFontSize(int size);
 extern void getActualSize(int& width, int& height);
-
+extern void hideCursor();
+extern string g_playerName;
+extern string g_starterName;
+extern int g_playerHP, g_playerMaxHP, g_playerGold, g_potionCount;
 void drawFrame(const vector<wstring>& frame, int x, int y) {
 	for (int i = 0; i < (int)frame.size(); i++) {
 		goToXY(x, y + i);

@@ -1,60 +1,5 @@
-﻿#include <iostream>
-#include <string>
-#include <conio.h> 
-#include <windows.h>
-
-using namespace std;
-
-extern void setFontSize(int size);
-extern void goToXY(int x, int y);
-extern void getActualSize(int& width, int& height);
-extern string g_playerName;
-extern string g_starterName;
-
-// 대사창 출력 함수 (안정성 강화)
-void talk(string name, string text) {
-	int w, h;
-	getActualSize(w, h);
-	int baseY = h - 10;
-
-	system("cls");
-
-	goToXY(5, baseY);
-	for (int i = 0; i < w - 10; i++) cout << "=";
-
-	goToXY(10, baseY + 2);
-	cout << "[" << name << "]";
-	goToXY(10, baseY + 4);
-
-	while (_kbhit()) _getch();
-
-	bool skip = false;
-	for (int i = 0; i < (int)text.length(); i++) {
-		if (!skip && _kbhit()) {
-			skip = true;
-			while (_kbhit()) _getch();
-		}
-
-		if (text[i] & 0x80) {
-			cout << text[i] << text[i + 1];
-			i++;
-		}
-		else {
-			cout << text[i];
-		}
-		if (!skip) Sleep(20);
-	}
-
-	goToXY(w - 30, h - 3);
-	cout << "▶ [Enter]를 누르세요";
-
-	// 엔터 입력 대기
-	while (true) {
-		if (_kbhit()) {
-			if (_getch() == 13) break;
-		}
-	}
-}
+﻿#include "Common.h"
+#include <conio.h>
 
 void scene2() {
 	Sleep(500);
@@ -71,11 +16,10 @@ void scene2() {
 	goToXY(midX, midY + 2); cout << "========================================";
 	goToXY(midX + 5, midY + 4); cout << " 입력: ";
 
-	// [수정] string으로 제대로 입력받기
 	string tempName;
 	cin >> tempName;
 	g_playerName = tempName;
-	cin.ignore(1000, '\n'); // 남은 엔터 제거
+	cin.ignore(1000, '\n');
 
 	talk("오박사", g_playerName + "군 왔는가?");
 	talk("오박사", "오늘은 자네가 이 포켓몬 탑에 처음 들어가보는 날이 아닌가!");
@@ -99,9 +43,7 @@ void scene2() {
 
 		int choice;
 		if (!(cin >> choice)) {
-			cin.clear();
-			cin.ignore(1000, '\n');
-			continue;
+			cin.clear(); cin.ignore(1000, '\n'); continue;
 		}
 		cin.ignore(1000, '\n');
 
@@ -112,7 +54,6 @@ void scene2() {
 			talk("오박사", "허허, 장난치지 말고 하나를 골라보려무나.");
 			continue;
 		}
-
 		talk("오박사", g_starterName + "은(는) 정말 탁월한 선택일세!");
 		selectionDone = true;
 	}

@@ -1,13 +1,21 @@
 ﻿#include <iostream>
-#include <io.h>    
-#include <fcntl.h> 
+#include <string>
+#include <vector>
 #include <windows.h>
+#include <conio.h>
+#include <io.h>
+#include <fcntl.h>
 
 using namespace std;
 
-extern void getActualSize(int& width, int& height);
+// [외부 참조 선언 - main.cpp의 것을 빌려씀]
+extern void goToXY(int x, int y);
 extern void setFontSize(int size);
+extern void getActualSize(int& width, int& height);
 extern void hideCursor();
+extern string g_playerName;
+extern string g_starterName;
+extern int g_playerHP, g_playerMaxHP, g_playerGold, g_potionCount;
 
 // [수정] 유니코드 모드에서도 안전하게 화면을 지우도록 변경
 void fadeOut(int lines, int cols) {
