@@ -1,147 +1,89 @@
-﻿#include <iostream>
-#include <string>
-#include <vector>
-#include <ctime>
+﻿#include "Common.h"
+#include "GameData.h"
 #include <io.h>
 #include <fcntl.h>
-#include <windows.h>
 
-using namespace std;
+// 유니코드 변환 유틸 (에러 해결: &r[0] 사용)
+wstring s2ws_battle(const string& s) {
+	if (s.empty()) return L"";
+	int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), -1, NULL, 0);
+	if (len <= 0) return L"";
 
-// [도구] main.cpp에서 정의된 공통 함수 가져오기
-extern void goToXY(int x, int y);
-extern void setFontSize(int size);
-extern string g_playerName;
-extern string g_starterName;
+	wstring r(len, 0);
+	// [수정] &r 대신 &r[0]를 전달하여 실제 버퍼 주소를 넘겨야 합니다.
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), -1, &r[0], len);
 
-struct Pokemon {
-	string name;
-	int level;
-	int hp, maxHp;
-	int atk, spd;
-	int gold, exp;
-};
+	// 문자열 끝에 포함된 널 문자를 제거하여 깔끔하게 처리
+	if (!r.empty() && r.back() == L'\0') r.pop_back();
 
-// HP바 동적 계산 (유니코드 블록 활용)
-wstring getHPBar(int hp, int maxHp, int length) {
-	if (hp < 0) hp = 0;
-	int filled = (hp * length) / maxHp;
-	wstring bar = L"";
-	for (int i = 0; i < length; i++) {
-		if (i < filled) bar += L"█"; else bar += L"░";
-	}
-	return bar;
+	return r;
 }
 
-// [핵심] 현재 전투 상황을 실시간으로 그리는 UI 함수
-void renderBattleUI(Pokemon& p, Pokemon& e, string message) {
+// UI 렌더링 함수 (기존 로직 유지)
+void renderBattleFrame(Pokemon& p, Pokemon& e, string msg, int mode, int selSkillIdx = 0) {
+	(void)_setmode(_fileno(stdout), _O_U16TEXT);
 	system("cls");
-	int oldMode = _setmode(_fileno(stdout), _O_U16TEXT);
 
-	wstring wP(p.name.begin(), p.name.end());
-	wstring wE(e.name.begin(), e.name.end());
-	wstring wMsg(message.begin(), message.end());
+	wcout << L"\n  " << s2ws_battle(e.name) << L" Lv." << e.level << L"  HP: " << e.hp << L"/" << e.maxHp << endl;
+	wcout << L"\n\n          [ 적 포켓몬 UI: " << s2ws_battle(e.name) << L" ]\n\n" << endl;
+	wcout << L"  " << s2ws_battle(p.name) << L" Lv." << p.level << L"  HP: " << p.hp << L"/" << p.maxHp << endl;
+	wcout << L"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
 
-	wcout << L"  포켓몬 탑 - 1층                                                                 P" << p.gold << endl;
-	wcout << L"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
-	wcout << L"    ╔══════════════════════════════════╗" << endl;
-	wcout << L"    ║ " << wE << L" ♂           Lv." << e.level << L"        ║" << endl;
-	wcout << L"    ║ HP  [" << getHPBar(e.hp, e.maxHp, 20) << L"]     ║" << endl;
-	wcout << L"    ╚══════════════════════════════════╝              " << endl;
+	if (mode == 0) { // 메인 메뉴
+		goToXY(4, 18); wcout << s2ws_battle(msg);
+		goToXY(51, 18); wcout << L"1.싸운다      2.볼";
+		goToXY(51, 19); wcout << L"3.포켓몬      4.도망간다";
+	}
+	else if (mode == 1) { // 기술 선택
+		for (int i = 0; i < 4; i++) {
+			int tx = (i % 2 == 0) ? 4 : 28;
+			int ty = (i < 2) ? 18 : 19;
+			goToXY(tx, ty);
+			if (i < (int)p.skills.size()) wcout << i + 1 << L"." << s2ws_battle(p.skills[i].name);
+			else wcout << L"-";
+		}
+	}
 
-	wcout << LR"(                                                       ,---.
-                                                      /  _  \
-                                                   __/_ ( )  |
-                                                 /  _  _    /
-
-
-                                                |  / \/ \  /
-                                                |  \____/  \
-                                                 \_________/--.
-                                                  /__/  /__/ 
-                 _.._
-               .'    `.
-              /   __   \
-           ,  |  /  \  |  ,
-           \'. \      / .'/    ╔══════════════════════════════════════════════════╗
-            '. \`----' / .'    ║ )" << wP << L" ♂                        Lv." << p.level << L"           ║" << endl;
-	wcout << L"          _.-'  '----'  '-._   ║ HP  [" << getHPBar(p.hp, p.maxHp, 26) << L"]  " << p.hp << L" / " << p.maxHp << L"        ║" << endl;
-	wcout << LR"(        .'        __        `. ║ EXP [▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]                   ║
-       /      _.-'  '-._      \╚══════════════════════════════════════════════════╝
-
-  ╔═══════════════════════════════════════════════════╦════════════════════════════════╗
-  ║                                                   ║                                ║
-  ║  )" << wMsg << LR"( ║    ▶ 1.싸운다          2.기술    ║
-  ║                                                   ║      3.포켓몬          4.도망    ║
-  ╚═══════════════════════════════════════════════════╩════════════════════════════════╝)" << endl;
-
-	_setmode(_fileno(stdout), oldMode);
+	goToXY(4, 22);
+	(void)_setmode(_fileno(stdout), _O_TEXT);
 }
 
+// 전투 시퀀스 (기존 로직 유지)
 void scene4() {
-	srand((unsigned int)time(NULL));
-	setFontSize(18);
+	Pokemon player("리자몽", 36, 120, 120, 84, 78, 100, 0, 0);
+	player.skills = {
+		{"베어가르기", "NORMAL", 20, 20, 70},
+		{"회오리불꽃", "FIRE", 15, 15, 35},
+		{"화염방사", "FIRE", 15, 15, 90},
+		{"에어슬래시", "FLY", 15, 15, 75}
+	};
 
-	// 1. 캐릭터 스탯 초기화
-	Pokemon player = { g_starterName, 1, 50, 50, 15, 50, 0, 0 };
-	Pokemon enemy = { "화살꼬빈", 2, 40, 40, 8, 45, 100, 60 };
+	Pokemon enemy("거북왕", 36, 130, 130, 85, 80, 78, 100, 100);
 
-	string currentMsg = player.name + "은(는) 무엇을 할까?           ";
-
-	// 2. 전투 루프 시작
 	while (player.hp > 0 && enemy.hp > 0) {
-		// UI 출력 및 명령 대기
-		renderBattleUI(player, enemy, currentMsg);
+		renderBattleFrame(player, enemy, player.name + "은(는) 무엇을 할까?", 0);
+		int menuChoice;
+		cout << "선택: "; cin >> menuChoice;
 
-		_setmode(_fileno(stdout), _O_TEXT);
-		int choice;
-		cout << "  선택: ";
-		if (!(cin >> choice)) { cin.clear(); cin.ignore(1000, '\n'); continue; }
-
-		if (choice == 4) { // 도망 로직
-			renderBattleUI(player, enemy, "무사히 도망쳤다!                    ");
-			Sleep(1000);
-			return;
-		}
-
-		// 3. 선공/후공 결정 (스피드 비교)
-		Pokemon* first = (player.spd >= enemy.spd) ? &player : &enemy;
-		Pokemon* second = (player.spd >= enemy.spd) ? &enemy : &player;
-
-		for (int i = 0; i < 2; i++) {
-			Pokemon* attacker = (i == 0) ? first : second;
-			Pokemon* defender = (i == 0) ? second : first;
-
-			if (attacker->hp <= 0 || defender->hp <= 0) break;
-
-			if (attacker->name == player.name) {
-				// 플레이어 공격 시각화
-				int damage = attacker->atk + (rand() % 5);
-				defender->hp -= damage;
-				renderBattleUI(player, enemy, attacker->name + "의 공격! " + to_string(damage) + " 데미지!      ");
+		if (menuChoice == 1) { // 싸운다
+			while (true) {
+				renderBattleFrame(player, enemy, "", 1, 0);
+				cout << "기술 번호(취소:0): ";
+				int sIdx; cin >> sIdx;
+				if (sIdx == 0) break;
+				if (sIdx >= 1 && sIdx <= (int)player.skills.size()) {
+					Skill& selected = player.skills[sIdx - 1];
+					renderBattleFrame(player, enemy, player.name + "의 " + selected.name + "!", 0);
+					Sleep(800);
+					enemy.hp -= (selected.power / 2);
+					if (enemy.hp <= 0) {
+						talk("시스템", enemy.name + "은(는) 쓰러졌다!");
+						return;
+					}
+					break;
+				}
 			}
-			else {
-				// 적의 반격 시각화
-				int damage = attacker->atk + (rand() % 3);
-				defender->hp -= damage;
-				renderBattleUI(player, enemy, attacker->name + "의 반격! " + to_string(damage) + " 데미지!      ");
-			}
-			Sleep(1000); // 연출을 위해 대기
 		}
-
-		currentMsg = player.name + "은(는) 무엇을 할까?           ";
+		else if (menuChoice == 4) return; // 도망
 	}
-
-	// 4. 전투 결과 처리
-	system("cls");
-	if (enemy.hp <= 0) {
-		cout << "\n\n  [전투 승리!] " << enemy.name << "을(를) 물리쳤습니다!" << endl;
-		cout << "  >> 보상: " << enemy.gold << " Gold와 " << enemy.exp << " EXP를 획득했습니다." << endl;
-		player.exp += enemy.exp;
-		if (player.exp >= 100) cout << "  >> ★ 레벨 업! ★" << endl;
-	}
-	else {
-		cout << "\n\n  [패배] " << player.name << "은(는) 눈앞이 캄캄해졌다..." << endl;
-	}
-	system("pause");
 }

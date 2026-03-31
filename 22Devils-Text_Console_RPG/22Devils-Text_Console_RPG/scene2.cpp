@@ -1,63 +1,5 @@
-﻿#include <iostream>
-#include <string>
-#include <conio.h> 
-#include <windows.h>
-
-using namespace std;
-
-extern void setFontSize(int size);
-extern void goToXY(int x, int y);
-extern void getActualSize(int& width, int& height);
-extern string g_playerName;
-extern string g_starterName;
-
-void talk(string name, string text) {
-	int w, h;
-	getActualSize(w, h);
-	int baseY = h - 8;
-
-	system("cls");
-	// 1. 구분선
-	goToXY(0, baseY);
-	for (int i = 0; i < w - 1; i++) cout << "-";
-
-	// 2. 이름 출력
-	goToXY(10, baseY + 2);
-	cout << "[" << name << "]: ";
-
-	// [중요] 이전 입력(엔터 등)이 버퍼에 남아있으면 미리 비워줌
-	while (_kbhit()) _getch();
-
-	bool skip = false;
-
-	// 3. 출력 루프 (한글 2바이트 처리 포함)
-	for (int i = 0; i < (int)text.length(); i++) {
-		// 출력 중 아무 키나 누르면 스킵 모드 활성화
-		if (!skip && _kbhit()) {
-			skip = true;
-			while (_kbhit()) _getch(); // 눌린 키를 비움
-		}
-
-		// 한글(2바이트) 체크 및 출력
-		if (text[i] & 0x80) { // 한글인 경우 (MSVC/CP949 기준)
-			cout << text[i] << text[i + 1];
-			i++;
-		}
-		else {
-			cout << text[i];
-		}
-
-		if (!skip) Sleep(25); // 스킵이 아닐 때만 딜레이
-	}
-
-	// 4. 안내 문구
-	goToXY(w - 25, h - 2);
-	cout << "Next [Enter] ▼";
-
-	// 문장이 다 나온 후, 다음 대사로 넘어가기 위한 엔터 대기
-	while (_kbhit()) _getch(); // 남은 키 입력 제거
-	system("pause > nul");
-}
+﻿#include "Common.h"
+#include <conio.h>
 
 void scene2() {
 	Sleep(500);
@@ -67,15 +9,16 @@ void scene2() {
 	getActualSize(w, h);
 
 	int midX = (w / 2) - 20;
-	int midY = (h / 2);
-	goToXY(midX, midY - 2); cout << "========================================";
-	goToXY(midX, midY - 1); cout << "           [ 당신의 이름은? ]           ";
+	int midY = (h / 2) - 5;
+
 	goToXY(midX, midY);     cout << "========================================";
-	goToXY(midX + 5, midY + 2); cout << " 입력: ";
+	goToXY(midX, midY + 1); cout << "           [ 당신의 이름은? ]           ";
+	goToXY(midX, midY + 2); cout << "========================================";
+	goToXY(midX + 5, midY + 4); cout << " 입력: ";
 
-	cin >> g_playerName;
-
-	// [핵심] 이름 입력 후 남은 '엔터' 기록을 무시하도록 버퍼 청소
+	string tempName;
+	cin >> tempName;
+	g_playerName = tempName;
 	cin.ignore(1000, '\n');
 
 	talk("오박사", g_playerName + "군 왔는가?");
@@ -89,27 +32,28 @@ void scene2() {
 		system("cls");
 		getActualSize(w, h);
 		midX = (w / 2) - 25;
-		midY = (h / 2);
-		goToXY(midX, midY - 4); cout << "==================================================";
-		goToXY(midX, midY - 3); cout << " [오박사: 자, 이 테이블 위에 있는 3마리 중 하나를 고르렴!] ";
-		goToXY(midX, midY - 2); cout << "==================================================";
-		goToXY(midX, midY);     cout << " 1. 파이리(불)  2. 꼬부기(물)  3. 이상해씨(풀)";
-		goToXY(midX, midY + 1); cout << "--------------------------------------------------";
-		goToXY(midX + 20, midY + 3); cout << " 선택: ";
+		midY = (h / 2) - 5;
+
+		goToXY(midX, midY);     cout << "==================================================";
+		goToXY(midX, midY + 1); cout << " [오박사: 자, 이 세 마리 중 하나를 고르렴!] ";
+		goToXY(midX, midY + 2); cout << "==================================================";
+		goToXY(midX + 2, midY + 4); cout << " 1. 파이리(불)  2. 꼬부기(물)  3. 이상해씨(풀)";
+		goToXY(midX, midY + 5);     cout << "--------------------------------------------------";
+		goToXY(midX + 15, midY + 7); cout << " 선택 번호: ";
 
 		int choice;
 		if (!(cin >> choice)) {
-			cin.clear();
-			cin.ignore(1000, '\n');
-			continue;
+			cin.clear(); cin.ignore(1000, '\n'); continue;
 		}
-		cin.ignore(1000, '\n'); // 입력 후 버퍼 비우기
+		cin.ignore(1000, '\n');
 
 		if (choice == 1) g_starterName = "파이리";
 		else if (choice == 2) g_starterName = "꼬부기";
 		else if (choice == 3) g_starterName = "이상해씨";
-		else { talk("오박사", "허허, 장난치지 말고 하나를 골라보려무나."); continue; }
-
+		else {
+			talk("오박사", "허허, 장난치지 말고 하나를 골라보려무나.");
+			continue;
+		}
 		talk("오박사", g_starterName + "은(는) 정말 탁월한 선택일세!");
 		selectionDone = true;
 	}
@@ -122,7 +66,8 @@ void scene2() {
 	talk("오박사", "그럼, 즐거운 여행을 시작하게나!");
 
 	system("cls");
-	goToXY(w / 2 - 12, h / 2);
+	getActualSize(w, h);
+	goToXY(w / 2 - 15, h / 2);
 	cout << "      여행이 시작되었습니다!       ";
-	system("pause > nul");
+	Sleep(2000);
 }

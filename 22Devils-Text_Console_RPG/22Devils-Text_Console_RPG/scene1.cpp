@@ -1,32 +1,23 @@
-﻿#include <iostream>
-#include <io.h>    
-#include <fcntl.h> 
-#include <windows.h>
-
-using namespace std;
-
-// main에 있는 함수 빌려쓰기
-extern void getActualSize(int& width, int& height);
-extern void setFontSize(int size);
-extern void hideCursor();
+﻿#include "Common.h"
+#include <io.h>
+#include <fcntl.h>
 
 void fadeOut(int lines, int cols) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	for (int i = 0; i < lines; i++) {
 		SetConsoleCursorPosition(hConsole, { 0, (SHORT)i });
-		for (int j = 0; j < cols; j++) {
-			wcout << L" ";
-		}
-		Sleep(10);
+		for (int j = 0; j < cols; j++) wcout << L" ";
+		Sleep(5);
 	}
 	system("cls");
 }
 
 void scene1() {
 	hideCursor();
-	_setmode(_fileno(stdout), _O_U16TEXT);
-	setFontSize(50);
-	system("mode con: cols=250");
+
+	// [수정] C6031 경고 해결: (void) 추가
+	(void)_setmode(_fileno(stdout), _O_U16TEXT);
+	setFontSize(30);
 
 	wcout << LR"(
              ██████╗  ██████╗ ██╗  ██╗███████╗██████╗  ██████╗  ██████╗ ██╗   ██╗███████╗
@@ -38,16 +29,16 @@ void scene1() {
 
              Press any key to start!
 
-                                                            조원:오채율,신건호,이현준
-                                                                이채호,배건우,노용수 
+                                                            조원: 오채율, 신건호, 이현준
+                                                                  이채호, 배건우, 노용수 
     )" << endl;
 
-	COORD pos = { 0, 0 };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 	system("pause > nul");
 
 	int currW, currH;
 	getActualSize(currW, currH);
 	fadeOut(currH, currW);
-	_setmode(_fileno(stdout), _O_TEXT);
+
+	// [수정] C6031 경고 해결: (void) 추가
+	(void)_setmode(_fileno(stdout), _O_TEXT);
 }

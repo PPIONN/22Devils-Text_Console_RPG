@@ -73,7 +73,7 @@ void talk(string name, string text) {
 
 	bool skip = false;
 	for (int i = 0; i < (int)text.length(); i++) {
-		if (!skip && _kbhit()) { skip = true; while (_kbhit()) (void)_getch();}
+		if (!skip && _kbhit()) { skip = true; while (_kbhit()) (void)_getch(); }
 		if (text[i] & 0x80) { cout << text[i] << text[i + 1]; i++; }
 		else { cout << text[i]; }
 		if (!skip) Sleep(20);

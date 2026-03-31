@@ -1,22 +1,8 @@
-﻿#include <iostream>
-#include <string>
-#include <vector>
-#include <windows.h>
-#include <conio.h>
+﻿#include "Common.h"
 #include <io.h>
 #include <fcntl.h>
+#include <vector>
 
-using namespace std;
-
-// [외부 참조 선언 - main.cpp의 것을 빌려씀]
-extern void talk(string name, string text);
-extern void goToXY(int x, int y);
-extern void setFontSize(int size);
-extern void getActualSize(int& width, int& height);
-extern void hideCursor();
-extern string g_playerName;
-extern string g_starterName;
-extern int g_playerHP, g_playerMaxHP, g_playerGold, g_potionCount;
 void drawFrame(const vector<wstring>& frame, int x, int y) {
 	for (int i = 0; i < (int)frame.size(); i++) {
 		goToXY(x, y + i);
@@ -25,6 +11,7 @@ void drawFrame(const vector<wstring>& frame, int x, int y) {
 }
 
 void scene3() {
+	// [수정] C6031 경고 해결: (void) 추가
 	int oldMode = _setmode(_fileno(stdout), _O_U16TEXT);
 	int w, h;
 	getActualSize(w, h);
@@ -45,7 +32,10 @@ void scene3() {
 		drawFrame(frames[f], currentX, midY);
 		Sleep(700);
 	}
-	_setmode(_fileno(stdout), oldMode);
+
+	// [수정] C6031 경고 해결: (void) 추가
+	(void)_setmode(_fileno(stdout), oldMode);
+
 	talk("나", "드디어 도착했어... 여기가 바로 '포켓몬 탑'인가.");
 	talk("나", "공기가 무거워... 무언가 강력한 기운이 느껴져.");
 }
