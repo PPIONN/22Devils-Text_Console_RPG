@@ -96,7 +96,7 @@ void Item::UseFHPPotion(Player& player)
 {
 	if (player.HasItem("FHPPotion"))
 	{
-		//player.setcurrenthp(9999);
+		player.setcurrenthp(9999);
 		player.RemoveItem("FHPPotion");
 	}
 	else

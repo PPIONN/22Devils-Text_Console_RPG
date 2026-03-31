@@ -25,9 +25,9 @@ public:
 	void BuyHPPotion(Player& player);
 	void UseHPPotion(Player& player,pokemon* poke);
 	void BuyFHPPotion(Player& player);
-	void UseFHPPotion(Player& player);
+	void UseFHPPotion(Player& player, pokemon* poke);
 	void BuyMultiLens(Player& player);
-	void UseMultiLens(Player& player);
+	//void UseMultiLens(Player& player);
 	void BuyPowerPotion(Player& player);
 	void UsePowerPotion(Player& player, pokemon* poke);
 	void Buyrandomexp(Player& player);
