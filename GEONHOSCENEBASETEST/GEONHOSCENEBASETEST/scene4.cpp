@@ -1,7 +1,7 @@
 ﻿#include "Common.h"
 #include "PokemonData.h"
 #include "BossData.h"
-
+#include <random>
 // 외부 전역 변수 참조
 extern Pokemon* g_playerPoke;
 extern Player g_player;
@@ -10,7 +10,7 @@ extern vector<string> g_legendaryPool;
 
 // --- [적 스폰 함수] ---
 // 아까 추가한 엠페르트, 루카리오, 가디안, 한카리아스, 마기라스 등이 모두 등장하도록 수정했습니다.
-unique_ptr<Monster> spawnEnemy(int floor) {
+unique_ptr<Monster> spawnEnemy(int floor) { // 
 	string name = "";
 	int lv = floor + 2;
 
@@ -43,6 +43,9 @@ unique_ptr<Monster> spawnEnemy(int floor) {
 // --- [메인 배틀 로직] ---
 void scene4() {
 	if (g_playerPoke == nullptr) return;
+	std::random_device rd; // 이현준 추가 수정사항 - 랜덤씨드 생성
+	std::mt19937 gen(rd()); // 이현준 추가 수정사항 - 랜덤씨드 생성
+	std::uniform_int_distribution<int> dis(0, 99); // 이현준 추가 수정사항 - 랜덤씨드 생성
 
 	// 1. 적 스폰 및 초기 메시지
 	unique_ptr<Monster> enemy = spawnEnemy(g_currentFloor);
@@ -92,13 +95,29 @@ void scene4() {
 			g_player.InventoryUI(); // 전투 중 아이템 사용
 			continue;
 		}
-		else if (menu == 3) { // [도망]
+		else if (menu == 3) { // [도망] ///
 			if (g_currentFloor % 5 == 0) {
 				talk("시스템", "보스에게서 도망칠 수 없다!");
 				continue;
 			}
-			talk("시스템", "무사히 도망쳤다!");
-			return;
+			/// 여기까지 아래로 수정사항 - 이현준
+
+
+			// 3. 랜덤 숫자 하나 생성
+			int randomNumber = dis(gen);
+
+			// 4. 30% 확률 체크 (0~29까지 나오면 당첨!)
+			if (randomNumber < 30) {
+				talk("시스템", "도망치지 못했다...");
+			}
+			else {
+				talk("시스템", "무사히 도망쳤다!");
+				return;
+			}
+
+			// 여기까지 위로 수정사항
+			//talk("시스템", "무사히 도망쳤다!");
+			//return;
 		}
 
 		// --- 적의 턴 ---

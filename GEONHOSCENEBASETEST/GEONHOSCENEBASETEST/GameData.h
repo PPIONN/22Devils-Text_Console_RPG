@@ -27,7 +27,7 @@ public:
 	string getName() { return name; }
 	int getlevel() { return level; }
 	float gethp() { return hp; }
-	void sethp(float h) { hp = (h > maxHp) ? maxHp : (h < 0 ? 0 : h); }
+	void sethp(float h) { hp = (h > maxHp) ? maxHp : (h < 1 ? 0 : h); }
 	float getmaxhp() { return maxHp; }
 	float getattack() { return attack; }
 	void setattack(float a) { attack = a; }
