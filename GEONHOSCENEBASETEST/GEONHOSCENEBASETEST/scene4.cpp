@@ -13,6 +13,15 @@ std::random_device rd; // 이현준 추가 수정사항 - 랜덤씨드 생성
 std::mt19937 gen(rd()); // 이현준 추가 수정사항 - 랜덤씨드 생성
 // --- [적 스폰 함수] ---
 // 아까 추가한 엠페르트, 루카리오, 가디안, 한카리아스, 마기라스 등이 모두 등장하도록 수정했습니다.
+int getAliveCount() {
+	int count = 0;
+	for (auto p : g_playerParty) {
+		if (p != nullptr && p->gethp() > 0) {
+			count++;
+		}
+	}
+	return count;
+}
 void SwapPokemon() {
 	system("cls");
 	cout << "\n========== [ 포켓몬 교체 ] ==========" << endl;
@@ -253,7 +262,15 @@ void scene4() {
 
 			// 플레이어 패배 확인
 			if (g_playerPoke->gethp() <= 0) {
+				int aliveCount = getAliveCount(); // 실시간으로 생존 포켓몬 수 확인
+				if (aliveCount == 0) {
+					talk("시스템", g_playerPoke->getName() + "은(는) 쓰러졌다...더이상 포켓몬이 없다. 눈앞이 캄캄해졌다!");
+					return;
+				}
+				cout << "남은 포켓몬은 " << aliveCount << " 마리!" << endl;
+				Sleep(1500);
 				SwapPokemon();
+			
 				// 교체 시에도 턴이 넘어가는게 원작 고증이지만, 
 				// 우선은 교체 후 다시 내 메뉴가 나오게 하려면 continue;
 				continue;
