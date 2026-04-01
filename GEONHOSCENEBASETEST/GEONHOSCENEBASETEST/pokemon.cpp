@@ -9,6 +9,11 @@ using namespace std;
 
 // 1. 경험치 획득 로직
 void Pokemon::gainExp(int amount) {
+	if (level >= 10) {
+		cout << "해당 포켓몬은 더이상 경험치를 올릴 수 없습니다!" << endl;
+		_getch();
+		return;
+	}
 	exp += amount;
 	cout << "\n" << name << "은(는) " << amount << "의 경험치를 얻었다!" << endl;
 
@@ -178,6 +183,11 @@ void Pokemon::newpokescale(int targetLevel) {
 //}
 void Pokemon::levelup() {
 	// 1. 상승 전 스탯 저장
+	if (getlevel() >= 10) {
+		cout << "해당 포켓몬은 더이상 레벨을 올릴 수 없습니다!" << endl;
+		_getch();
+		return;
+	}
 	float oldMaxHp = maxHp;
 	float oldAtk = attack;
 	float oldDef = defense;

@@ -41,10 +41,18 @@ void SwapPokemon() {
 			Sleep(1000);
 		}
 		else {
+			// 1. 기존 포켓몬 퇴장 메시지
 			cout << g_playerPoke->getName() << ", 고생했어! 돌아와!" << endl;
 			Sleep(800);
-			g_playerPoke = selected; // 현재 전투 포켓몬 교체
-			g_playerPoke->setwarstat(); // 랭크 등 전투 스텟 초기화
+
+			// 2. 실제 포켓몬 교체 (포인터 변경)
+			g_playerPoke = selected;
+
+			// 3. [핵심] 새로 나온 포켓몬의 전투용 스탯(warstat)을 현재 능력치 기반으로 초기화
+			// 이 함수가 호출되면서 이전 포켓몬이 쌓아둔 버프/디버프가 사라지고 깨끗한 상태가 됩니다.
+			g_playerPoke->setwarstat();
+
+			// 4. 등장 메시지
 			cout << "가라! " << g_playerPoke->getName() << "!" << endl;
 			Sleep(1000);
 		}
@@ -145,11 +153,11 @@ void scene4() {
 
 				if (enemy->gethp() <= 0) {
 					talk("시스템", enemy->getName() + "은(는) 쓰러졌다!");
-					g_playerPoke->levelup();
 					// 경험치 및 골드 보상
 					talk("시스템", "승리했습니다.");
 					int expReward = enemy->getlevel() * 30;
 					g_playerPoke->gainExp(expReward);
+					g_playerPoke->levelup();
 					g_player.setmoney(g_currentFloor * 100);
 					return;
 				}
