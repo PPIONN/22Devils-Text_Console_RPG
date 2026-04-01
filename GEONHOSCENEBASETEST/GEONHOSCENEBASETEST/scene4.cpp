@@ -254,6 +254,10 @@ void scene4() {
 
 			// 플레이어 패배 확인
 			if (g_playerPoke->gethp() <= 0) {
+				SwapPokemon();
+				// 교체 시에도 턴이 넘어가는게 원작 고증이지만, 
+				// 우선은 교체 후 다시 내 메뉴가 나오게 하려면 continue;
+				continue;
 				talk("시스템", g_playerPoke->getName() + "은(는) 쓰러졌다... 눈앞이 캄캄해졌다!");
 				return;
 			}
