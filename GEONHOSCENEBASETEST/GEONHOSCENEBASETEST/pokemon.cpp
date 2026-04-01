@@ -10,9 +10,12 @@ using namespace std;
 // 1. 경험치 획득 로직
 void Pokemon::gainExp(int amount) {
 	if (level >= 10) {
-		cout << "해당 포켓몬은 더이상 경험치를 올릴 수 없습니다!" << endl;
-		_getch();
-		return;
+		cout << "해당 포켓몬은 더이상 경험치를 올릴 수 없습니다!" << endl; {
+			_getch();
+			return;
+		}
+	}if (exp > 100) {
+		levelup();
 	}
 	exp += amount;
 	cout << "\n" << name << "은(는) " << amount << "의 경험치를 얻었다!" << endl;

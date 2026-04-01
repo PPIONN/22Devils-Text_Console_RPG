@@ -157,7 +157,6 @@ void scene4() {
 					talk("시스템", "승리했습니다.");
 					int expReward = enemy->getlevel() * 30;
 					g_playerPoke->gainExp(expReward);
-					g_playerPoke->levelup();
 					g_player.setmoney(g_currentFloor * 100);
 					return;
 				}
